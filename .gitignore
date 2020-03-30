@@ -1,1 +1,3 @@
 /target
+bundle.*
+/frontend/node_modules/
