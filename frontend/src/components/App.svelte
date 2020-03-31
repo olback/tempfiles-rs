@@ -94,7 +94,7 @@
 
 <style type="text/scss">
 
-    @import 'src/scss/colors';
+    @import 'src/scss/variables';
 
     main {
 

@@ -12,7 +12,7 @@
 
 <style type="text/scss">
 
-    @import 'src/scss/colors';
+    @import 'src/scss/variables';
 
     footer {
 
@@ -32,6 +32,11 @@
             align-self: center;
             padding: 0;
             margin: 0;
+            transition: color $transition_time_link ease-in-out;
+        }
+
+        a:hover {
+            color: $accent2;
         }
 
         span.spacer {

@@ -1,9 +1,9 @@
 <script></script>
 
-<h1>Download</h1>
+<h1>Api</h1>
 
 <style type="text/scss">
 
-    @import 'src/scss/colors';
+    @import 'src/scss/variables';
 
 </style>

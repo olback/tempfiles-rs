@@ -30,6 +30,12 @@ impl<'a> FileId<'a> {
 
     }
 
+    pub fn to_string(&self) -> String {
+
+        String::from(self.0.clone())
+
+    }
+
     pub fn is_valid(id: &str) -> bool {
 
         id.chars().all(|c| {
