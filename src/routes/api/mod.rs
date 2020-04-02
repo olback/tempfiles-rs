@@ -1,55 +1,53 @@
 use rocket::{
-    post,
-    delete,
-    response::{status},
-    Data,
-    http::{ContentType, RawStr, Status}
+    http::{
+        ContentType,
+        Status
+    },
+    request::Request,
+    response::{
+        self,
+        Response,
+        Responder
+    }
 };
 use serde::Serialize;
-use rocket_contrib::json::Json;
-use std::{io, env};
-use crate::utils::{FileId, Password};
+use std::io::Cursor;
+use crate::internal_server_error_from;
 
-#[derive(Serialize)]
+pub mod upload;
+
+#[derive(Serialize, Debug)]
 pub struct ApiError {
     status: u16,
     message: String
 }
 
-#[derive(Serialize)]
-pub struct ApiUploadResponse {
-    pub status: u16,
-    pub id: String,
-    pub password: String,
-    pub delete_password: String
-}
+impl ApiError {
 
-#[post("/upload?<filename>&<maxviews>", format = "any", data = "<data>")]
-pub fn upload(filename: Option<&RawStr>, maxviews: Option<usize>, content_type: &ContentType, data: Data) -> Result<Json<ApiUploadResponse>, ()> {
+    pub fn new<M>(message: M, status: u16) -> Self
+        where M: std::fmt::Display {
 
-    let file_id = FileId::new(16);
-    let password = Password::new(16);
-    let delete_password = Password::new(16);
+        Self {
+            status: status,
+            message: format!("{}", message)
+        }
 
-    println!("{:#?} {:#?}", filename, maxviews);
-    println!("{:#?}", content_type);
-
-    data.stream_to_file(env::temp_dir().join("upload.txt"))
-        .map(|n| n.to_string());
-
-    Ok(Json(ApiUploadResponse {
-        status: 200,
-        id: file_id.to_string(),
-        password: password.to_string(),
-        delete_password: delete_password.to_string()
-    }))
+    }
 
 }
 
-// #[delete("/delete", format = "json", data = "<data>")]
-// pub fn delete(data: DeleteFile) -> Result<(), ()> {
+impl<'a> Responder<'a> for ApiError {
 
-//     unimplemented!()
+    fn respond_to(self, _: &Request) -> response::Result<'a> {
 
-// }
+        Response::build()
+            .header(ContentType::JSON)
+            .status(Status::from_code(self.status).unwrap())
+            .sized_body(Cursor::new(serde_json::to_string_pretty(&self).unwrap()))
+            .ok()
 
+    }
+
+}
+
+internal_server_error_from!(std::io::Error);

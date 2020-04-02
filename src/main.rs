@@ -1,6 +1,6 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 
-use rocket::Rocket;
+use rocket::{self, Rocket};
 use rocket_contrib::{
     templates::Template,
     serve::StaticFiles
@@ -8,6 +8,7 @@ use rocket_contrib::{
 
 mod routes;
 mod utils;
+mod macros;
 
 fn main() {
 
@@ -22,7 +23,7 @@ fn main() {
     ])
     .mount("/api", rocket::routes![
         // routes::api::get,
-        routes::api::upload,
+        routes::api::upload::upload,
         // routes::api::delete
     ])
     .attach(Template::fairing())
