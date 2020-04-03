@@ -6,8 +6,9 @@
     let label;
     let input;
     let error = null;
-
     let filename = null;
+    let upload_success = null;
+    let loading = false;
 
     function onInput(evt) {
         filename = evt.target.value.replace('C:\\fakepath\\', '');
@@ -15,12 +16,17 @@
         label.classList.remove('none');
     }
 
-    function uploadFile() {
+    function uploadFile(evt) {
+
+        error = null;
 
         if (filename === null) {
             error = "Please select a file before uploading";
             return;
         }
+
+        evt.target.disabled = true;
+        loading = true;
 
         let params = new ParamsBuilder();
         params.append('filename', filename);
@@ -35,7 +41,14 @@
         })
         .then(res => res.json())
         .then(json => {
-            console.log(json);
+            if (json.status === 201) {
+                upload_success = json;
+                loading = false;
+            } else {
+                evt.target.disabled = false;
+                loading = false;
+                error = json.message;
+            }
         })
         .catch(err => error = err);
 
@@ -43,17 +56,48 @@
 
 </script>
 
-<h1>Upload a file</h1>
+{#if upload_success}
 
-<div class="file-input">
-    <input bind:this={input} on:input={onInput} type="file" id="file-input">
-    <label bind:this={label} for="file-input" class="none">Choose file...</label>
-</div>
+    <h1>Success!</h1>
 
-<button on:click={uploadFile}>Upload</button>
+    <div class="success">
 
-{#if error}
-    <p class="error">{error}</p>
+        <label for="success-url">Link</label>
+        <input id="success-url" type="text" readonly value="{`${origin}/d/${upload_success.id}/${upload_success.password}`}">
+
+        <label for="success-id">ID</label>
+        <input id="success-id" type="text" readonly value={upload_success.id}>
+
+        <label for="success-delete">Deletion password</label>
+        <input id="success-delete" type="text" readonly value={upload_success.delete_password}>
+
+        <button on:click={() => {upload_success = null; error = null; filename = null;}}>
+            Upload another
+        </button>
+
+    </div>
+
+{:else}
+
+    <h1>Upload a file</h1>
+
+    <div class="file-input">
+        <input bind:this={input} on:input={onInput} type="file" id="file-input">
+        <label bind:this={label} for="file-input" class="none">Choose file...</label>
+    </div>
+
+    <button on:click={uploadFile}>
+        {#if loading}
+            <span class="fas fa-sync fa-spin"></span>
+        {:else}
+            Upload
+        {/if}
+    </button>
+
+    {#if error}
+        <p class="error">Error: {error}</p>
+    {/if}
+
 {/if}
 
 <style type="text/scss">
@@ -62,6 +106,38 @@
 
     h1 {
         color: $accent;
+    }
+
+    div.success {
+
+        display: grid;
+        grid-template-columns: auto auto;
+        row-gap: 1em;
+        align-content: center;
+        align-items: center;
+
+        label {
+            color: $accent;
+            font-weight: bold;
+        }
+
+        input {
+
+            padding: 1em;
+            background-color: #ddd;
+            width: auto;
+            display: block;
+            border: none;
+            color: $background;
+            outline: none;
+            font-size: 12pt;
+
+        }
+
+        button {
+            width: max-content;
+        }
+
     }
 
     div.file-input {
@@ -113,10 +189,17 @@
         outline: none;
         cursor: pointer;
         transition: background-color $transition_time_button ease-in-out;
-    }
 
-    button:hover {
-        background-color: $accent2;
+
+        &:hover:not(:disabled) {
+            background-color: $accent2;
+        }
+
+        &:disabled {
+            background-color: $accent2;
+            cursor: initial;
+        }
+
     }
 
     p.error {

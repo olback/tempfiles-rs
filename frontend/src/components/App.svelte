@@ -73,7 +73,7 @@
     <div class="content">
 
         {#if tab === "upload"}
-            <Upload />
+            <Upload on:setTab={tab = setTabEvent} />
         {:else if tab === "download"}
             <Download />
         {:else if tab === "delete"}

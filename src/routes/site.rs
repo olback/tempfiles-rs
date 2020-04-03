@@ -1,38 +1,42 @@
-use rocket::{get, http::RawStr};
+use rocket::{get, State, http::RawStr};
 use rocket_contrib::templates::Template;
 use serde::Serialize;
+use crate::config::TempfilesConfig;
 
 #[derive(Serialize)]
 struct IndexContext<'c> {
-    version: &'c str
+    version: &'c str,
+    max_file_size: usize
 }
 
 impl<'c> IndexContext<'c> {
 
-    fn new() -> Self {
+    fn new(tc: &TempfilesConfig) -> Self {
+
         Self {
-            version: std::env!("CARGO_PKG_VERSION")
+            version: include_str!("../../version.txt"),
+            max_file_size: tc.max_file_size / (1024 * 1024)
         }
     }
 
 }
 
 #[get("/")]
-pub fn index() -> Template {
+pub fn index(tc: State<TempfilesConfig>) -> Template {
 
-    Template::render("index", IndexContext::new())
+    Template::render("index", IndexContext::new(&tc))
 
 }
 
 #[get("/<tab>")]
-pub fn index_tab(tab: String) -> Option<Template> {
+pub fn index_tab(tab: &RawStr, tc: State<TempfilesConfig>) -> Option<Template> {
 
     match tab.as_str() {
-        "upload" => Some(Template::render("index", IndexContext::new())),
-        "download" => Some(Template::render("index", IndexContext::new())),
-        "delete" => Some(Template::render("index", IndexContext::new())),
-        "sharex" => Some(Template::render("index", IndexContext::new())),
-        "api" => Some(Template::render("index", IndexContext::new())),
+        "upload" => Some(Template::render("index", IndexContext::new(&tc))),
+        "download" => Some(Template::render("index", IndexContext::new(&tc))),
+        "delete" => Some(Template::render("index", IndexContext::new(&tc))),
+        "sharex" => Some(Template::render("index", IndexContext::new(&tc))),
+        "api" => Some(Template::render("index", IndexContext::new(&tc))),
         _ => None
     }
 

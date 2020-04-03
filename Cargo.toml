@@ -8,8 +8,11 @@ edition = "2018"
 
 [dependencies]
 rocket = "0.4"
-rocket_contrib = { version = "0.4", default-features = false, features = [ "handlebars_templates", "serve", "json" ] }
+rocket_contrib = { version = "0.4", default-features = false, features = [ "handlebars_templates", "serve", "json", "databases", "postgres_pool" ] }
 rand = "0.7"
 serde = { version = "1", features = [ "derive" ] }
 serde_json = "1"
-# https://github.com/RustCrypto/AEADs
+bincode = "1.2"
+aead = "0.2"
+aes-gcm-siv = "0.4"
+diesel = "1.4"

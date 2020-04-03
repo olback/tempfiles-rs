@@ -51,3 +51,4 @@ impl<'a> Responder<'a> for ApiError {
 }
 
 internal_server_error_from!(std::io::Error);
+internal_server_error_from!(aead::Error);

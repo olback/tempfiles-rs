@@ -1,21 +1,24 @@
+[global.databases.tempfiles]
+url = "postgresql://tempfiles:tempfiles@localhost:5432/tempfiles"
+
 [development]
 address = "0.0.0.0"
 port = 5000
 workers = 8
 # log = "debug"
 log = "normal"
-limits = { forms = 26214400 }
+limits = { forms = 32768, file = 26214400 }
 
 [staging]
 address = "0.0.0.0"
 port = 5000
 workers = 8
 log = "normal"
-limits = { forms = 26214400 }
+limits = { forms = 32768, file = 26214400 }
 
 [production]
 address = "0.0.0.0"
 port = 3000
 workers = 2
 log = "critical"
-limits = { forms = 26214400 }
+limits = { forms = 32768, file = 26214400 }

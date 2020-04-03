@@ -6,7 +6,7 @@
     <p>
         Author: <a href="https://github.com/olback">olback</a>
         <span class="spacer"></span>
-        Version: <a href="https://github.com/olback/tempfiles-rs">{version}</a>
+        Version: <a href="https://github.com/olback/tempfiles-rs" title={version}>{version.substring(0, 7)}</a>
     </p>
 </footer>
 

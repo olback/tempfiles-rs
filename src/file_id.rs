@@ -2,7 +2,7 @@
 
 use std::{
     fmt,
-    borrow::Cow
+    convert::TryInto
 };
 use rocket::{
     request::FromParam,
@@ -13,11 +13,13 @@ use rand::{self, Rng};
 /// Table to retrieve chars from.
 const VALID_CHARS: &[u8] = b"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
-pub struct FileId<'a>(Cow<'a, str>);
+#[derive(Clone)]
+pub struct FileId(String);
+pub type Password = FileId;
 
-impl<'a> FileId<'a> {
+impl FileId {
 
-    pub fn new(size: usize) -> FileId<'static> {
+    pub fn new(size: usize) -> FileId {
 
         let mut id = String::with_capacity(size);
         let mut rng = rand::thread_rng();
@@ -26,13 +28,7 @@ impl<'a> FileId<'a> {
             id.push(VALID_CHARS[rng.gen::<usize>() % VALID_CHARS.len()] as char);
         }
 
-        FileId(Cow::Owned(id))
-
-    }
-
-    pub fn to_string(&self) -> String {
-
-        String::from(self.0.clone())
+        FileId(id)
 
     }
 
@@ -44,22 +40,28 @@ impl<'a> FileId<'a> {
 
     }
 
+    pub fn as_array32(&self) -> [u8; 32] {
+
+        self.0.as_bytes().try_into().unwrap()
+
+    }
+
 }
 
-impl<'a> fmt::Display for FileId<'a> {
+impl fmt::Display for FileId {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.0)
     }
 }
 
-impl<'a> FromParam<'a> for FileId<'a> {
+impl<'a> FromParam<'a> for FileId {
 
     type Error = &'a RawStr;
 
-    fn from_param(param: &'a RawStr) -> Result<FileId<'a>, &'a RawStr> {
+    fn from_param(param: &'a RawStr) -> Result<FileId, &'a RawStr> {
 
         match FileId::is_valid(param) {
-            true => Ok(FileId(Cow::Borrowed(param))),
+            true => Ok(FileId(String::from(param.as_str()))),
             false => Err(param)
         }
 
@@ -67,3 +69,12 @@ impl<'a> FromParam<'a> for FileId<'a> {
 
 }
 
+impl  Into<String> for FileId {
+
+    fn into(self) -> String {
+
+        self.0
+
+    }
+
+}

@@ -1,0 +1,27 @@
+--
+-- Drop existing database if it exists
+--
+DROP DATABASE IF EXISTS tempfiles;
+
+--
+-- Create new database 'tempfiles'
+--
+CREATE DATABASE tempfiles;
+
+--
+-- Drop table if exists
+--
+DROP TABLE IF EXISTS tempfiles;
+
+--
+-- Create new table to store all data
+--
+CREATE TABLE tempfiles(
+    id          VARCHAR(64) PRIMARY KEY NOT NULL UNIQUE,
+    iv          BYTEA NOT NULL,
+    content     BYTEA NOT NULL,
+    views       INT NOT NULL,
+    max_views   INT NOT NULL,
+    timestamp   INT NOT NULL
+);
+

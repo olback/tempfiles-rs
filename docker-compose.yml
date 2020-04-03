@@ -1,0 +1,27 @@
+version: '3.1'
+
+services:
+
+  postgres:
+    image: postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: tempfiles
+      POSTGRES_PASSWORD: tempfiles
+    volumes:
+      - ./data:/var/lib/postgresql/data
+      - ./scripts/postgres:/scripts/
+
+  # server:
+  #   image: alpine
+  #   restart: unless-stopped
+  #   command: ""
+  #   tty: true
+  #   ports:
+  #     - "${ROCKET_PORT}:${ROCKET_PORT}"
+  #   environment:
+  #     ROCKET_PORT: ${ROCKET_PORT}
+  #   volumes:
+  #     - ".:/tempfiles"

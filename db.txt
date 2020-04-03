@@ -1,9 +1,9 @@
 id                  (VARCHAR(32) NOT NULL)
 iv                  (VARCHAR(??) NOT NULL) (blob?)
 content             (blob??? NOT NULL)
-views               (uint64 NOT NULL)
-max_views           (uint64 NOT NULL)
-timestamp           (uint64 NOT NULL)
+views               (integer NOT NULL)
+max_views           (integer)
+timestamp           (integer NOT NULL)
 
 
 content:
