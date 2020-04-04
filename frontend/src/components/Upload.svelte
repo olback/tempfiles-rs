@@ -74,6 +74,15 @@
 
     }
 
+    function setClipboard(el) {
+
+        el.target.select();
+        el.target.setSelectionRange(0, 1000);
+
+        document.execCommand('copy');
+
+    }
+
 </script>
 
 {#if upload_success}
@@ -83,13 +92,13 @@
     <div class="success">
 
         <label for="success-url">Link</label>
-        <input id="success-url" type="text" readonly value="{`${window.origin}/d/${upload_success.id}/${upload_success.password}`}">
+        <input on:click={setClipboard} id="success-url" type="text" readonly value="{`${window.origin}/d/${upload_success.id}/${upload_success.password}`}">
 
         <label for="success-id">ID</label>
-        <input id="success-id" type="text" readonly value={upload_success.id}>
+        <input on:click={setClipboard} id="success-id" type="text" readonly value={upload_success.id}>
 
         <label for="success-delete">Deletion password</label>
-        <input id="success-delete" type="text" readonly value={upload_success.delete_password}>
+        <input on:click={setClipboard} id="success-delete" type="text" readonly value={upload_success.delete_password}>
 
         <button on:click={() => {upload_success = null; error = null; filename = null; maxViews = 26}}>
             Upload another
