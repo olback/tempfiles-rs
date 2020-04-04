@@ -6,7 +6,8 @@ use crate::config::TempfilesConfig;
 #[derive(Serialize)]
 struct IndexContext<'c> {
     version: &'c str,
-    max_file_size: usize
+    max_file_size: usize,
+    name: String
 }
 
 impl<'c> IndexContext<'c> {
@@ -14,8 +15,9 @@ impl<'c> IndexContext<'c> {
     fn new(tc: &TempfilesConfig) -> Self {
 
         Self {
-            version: include_str!("../../version.txt"),
-            max_file_size: tc.max_file_size / (1024 * 1024)
+            version: include_str!("../../version.txt").trim(),
+            max_file_size: tc.max_file_size / (1024 * 1024),
+            name: tc.name.clone()
         }
     }
 

@@ -1,31 +1,26 @@
-[global.databases.tempfiles]
-url = "postgresql://tempfiles:tempfiles@localhost:5432/tempfiles"
-
-# 5 MiB = 5242880
-# 10 MiB = 10485760
-# 25 MiB = 26214400
-# 50 MiB = 52428800
-# 75 MiB = 78643200
-# 100 MiB = 104857600
+# This file is only used during development!
+# Production uses environment variables
 
 [development]
 address = "0.0.0.0"
 port = 5000
 workers = 8
-# log = "debug"
 log = "normal"
-limits = { forms = 32768, file = 26214400 }
+limits = { forms = 32768, files = 26214400 }
+base_url = "http://192.168.0.129:5000"
+databases = { tempfiles = { url = "postgresql://tempfiles:tempfiles@localhost:5432/tempfiles" } }
+name = "Tempfiles"
 
 [staging]
 address = "0.0.0.0"
 port = 5000
 workers = 8
 log = "normal"
-limits = { forms = 32768, file = 26214400 }
+limits = { forms = 32768, files = 26214400 }
 
 [production]
 address = "0.0.0.0"
-port = 3000
+port = 5000
 workers = 2
 log = "critical"
-limits = { forms = 32768, file = 26214400 }
+limits = { forms = 32768, files = 26214400 }

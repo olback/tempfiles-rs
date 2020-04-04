@@ -3,3 +3,4 @@ bundle.*
 /frontend/node_modules/
 version.txt
 /data/
+.env

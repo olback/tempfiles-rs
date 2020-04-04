@@ -1,1 +1,2 @@
+# See https://docs.rs/aes-gcm-siv/0.4.1/aes_gcm_siv/#performance-notes
 export RUSTFLAGS="-Ctarget-cpu=sandybridge -Ctarget-feature=+aes,+sse2,+sse4.1,+ssse3"

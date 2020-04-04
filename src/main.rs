@@ -23,10 +23,14 @@ mod crypto;
 
 fn main() {
 
+    // Wait for database to start
+    std::thread::sleep(std::time::Duration::from_secs(1));
+
     Rocket::ignite()
     .mount("/", routes![
         routes::site::index,
         routes::site::index_tab,
+        routes::sharex::sharex
     ])
     .mount("/assets", StaticFiles::from("assets"))
     .mount("/d", routes![
