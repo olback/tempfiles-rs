@@ -21,6 +21,7 @@ div.status {
 }
 
 div.message {
+    text-align: center;
     justify-self: center;
     font-size: calc(12px + (16 - 12) * (100vw - 200px) / (400 - 200));
 }

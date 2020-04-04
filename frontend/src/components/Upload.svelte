@@ -5,6 +5,8 @@
 
     let label;
     let input;
+    let maxViews = 26;
+    let maxViewsLabel;
     let error = null;
     let filename = null;
     let upload_success = null;
@@ -30,7 +32,9 @@
 
         let params = new ParamsBuilder();
         params.append('filename', filename);
-        // params.append('maxviews', 28);
+        if (maxViews < 26) {
+            params.append('maxviews', maxViews);
+        }
 
         const url = config.apiUrl.join('upload');
         url.search = params.toString();
@@ -63,7 +67,7 @@
     <div class="success">
 
         <label for="success-url">Link</label>
-        <input id="success-url" type="text" readonly value="{`${origin}/d/${upload_success.id}/${upload_success.password}`}">
+        <input id="success-url" type="text" readonly value="{`${window.origin}/d/${upload_success.id}/${upload_success.password}`}">
 
         <label for="success-id">ID</label>
         <input id="success-id" type="text" readonly value={upload_success.id}>
@@ -71,7 +75,7 @@
         <label for="success-delete">Deletion password</label>
         <input id="success-delete" type="text" readonly value={upload_success.delete_password}>
 
-        <button on:click={() => {upload_success = null; error = null; filename = null;}}>
+        <button on:click={() => {upload_success = null; error = null; filename = null; maxViews = 26}}>
             Upload another
         </button>
 
@@ -81,22 +85,32 @@
 
     <h1>Upload a file</h1>
 
-    <div class="file-input">
-        <input bind:this={input} on:input={onInput} type="file" id="file-input">
-        <label bind:this={label} for="file-input" class="none">Choose file...</label>
-    </div>
+    <div class="upload">
 
-    <button on:click={uploadFile}>
-        {#if loading}
-            <span class="fas fa-sync fa-spin"></span>
-        {:else}
-            Upload
+        <div class="file-input">
+            <input bind:this={input} on:input={onInput} type="file" id="file-input">
+            <label bind:this={label} for="file-input" class="none">Choose file...</label>
+        </div>
+
+        <div class="max-views">
+            <span>Max views</span>
+            <input bind:value={maxViews} on:input={(e) => {maxViewsLabel.innerHTML = e.target.value == 26 ? 'Infinite' : e.target.value}} type="range" min="1" max="26" step="1">
+            <span bind:this={maxViewsLabel}>Infinite</span>
+        </div>
+
+        <button on:click={uploadFile}>
+            {#if loading}
+                <span class="fas fa-sync fa-spin"></span>
+            {:else}
+                Upload
+            {/if}
+        </button>
+
+        {#if error}
+            <p class="error">Error: {error}</p>
         {/if}
-    </button>
 
-    {#if error}
-        <p class="error">Error: {error}</p>
-    {/if}
+    </div>
 
 {/if}
 
@@ -140,12 +154,93 @@
 
     }
 
+    div.upload {
+
+        display: grid;
+        row-gap: 1.5em;
+
+        div.max-views {
+
+            color: $accent;
+            font-size: 12pt;
+            display: grid;
+            grid-template-columns: 25% auto 25%;
+            justify-content: stretch;
+            justify-items: center;
+            font-weight: bold;
+
+            input[type=range] {
+
+                justify-self: stretch;
+                -webkit-appearance: none;
+                outline: none;
+                background-color: transparent;
+
+                &::-webkit-slider-runnable-track {
+                    // margin-bottom: 10px;
+                    width: 100%;
+                    height: 5px;
+                    cursor: pointer;
+                    box-shadow: none;
+                    background: $background2;
+                    border-radius: 25px;
+                    border: none;
+                }
+
+                &::-moz-range-track {
+                    width: 100%;
+                    height: 5px;
+                    cursor: pointer;
+                    box-shadow: none;
+                    background: $background2;
+                    border-radius: 25px;
+                    border: none;
+                }
+
+                &::-webkit-slider-thumb {
+                    box-shadow: none;
+                    border: none;
+                    height: 20px;
+                    width: 20px;
+                    border-radius: 50%;
+                    background: $accent2;
+                    cursor: pointer;
+                    -webkit-appearance: none;
+                    margin-top: -7.6px;
+                }
+
+                &::-moz-range-thumb {
+                    box-shadow: none;
+                    border: none;
+                    height: 20px;
+                    width: 20px;
+                    border: none;
+                    border-radius: 50%;
+                    background: $accent2;
+                    cursor: pointer;
+                    -webkit-appearance: none;
+                    margin-top: -3.6px;
+                }
+
+            }
+
+        }
+
+    }
+
     div.file-input {
 
-        margin: 2em 0;
+        // margin: 2em 0;
 
         input[type=file] {
             display: none;
+        }
+
+        input[type=range] {
+            display: inline-block;
+            margin: auto;
+            margin-top: 2em;
+            width: 50%;
         }
 
         label {
@@ -189,7 +284,6 @@
         outline: none;
         cursor: pointer;
         transition: background-color $transition_time_button ease-in-out;
-
 
         &:hover:not(:disabled) {
             background-color: $accent2;
