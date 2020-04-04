@@ -1,9 +1,6 @@
 // Based on https://github.com/SergioBenitez/Rocket/blob/v0.4/examples/pastebin/src/paste_id.rs
 
-use std::{
-    fmt,
-    convert::TryInto
-};
+use std::fmt;
 use rocket::{
     request::FromParam,
     http::RawStr
@@ -15,7 +12,6 @@ const VALID_CHARS: &[u8] = b"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmno
 
 #[derive(Clone)]
 pub struct FileId(String);
-pub type Password = FileId;
 
 impl FileId {
 
@@ -32,6 +28,12 @@ impl FileId {
 
     }
 
+    pub fn new_from_str(s: &str) -> FileId {
+
+        FileId(s.into())
+
+    }
+
     pub fn is_valid(id: &str) -> bool {
 
         id.chars().all(|c| {
@@ -40,9 +42,15 @@ impl FileId {
 
     }
 
-    pub fn as_array32(&self) -> [u8; 32] {
+    pub fn as_bytes(&self) -> &[u8] {
 
-        self.0.as_bytes().try_into().unwrap()
+        self.0.as_bytes()
+
+    }
+
+    pub fn as_ref(&self) -> &String {
+
+        &self.0
 
     }
 

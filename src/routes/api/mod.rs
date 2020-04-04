@@ -15,6 +15,7 @@ use std::io::Cursor;
 use crate::internal_server_error_from;
 
 pub mod upload;
+pub mod delete;
 
 #[derive(Serialize, Debug)]
 pub struct ApiError {
@@ -52,3 +53,5 @@ impl<'a> Responder<'a> for ApiError {
 
 internal_server_error_from!(std::io::Error);
 internal_server_error_from!(aead::Error);
+internal_server_error_from!(Box<bincode::ErrorKind>);
+internal_server_error_from!(rocket_contrib::databases::postgres::error::Error);

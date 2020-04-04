@@ -1,27 +1,52 @@
 --
--- Drop existing database if it exists
+-- Tempfiles-rs Database
 --
-DROP DATABASE IF EXISTS tempfiles;
-
---
--- Create new database 'tempfiles'
---
-CREATE DATABASE tempfiles;
-
---
--- Drop table if exists
---
-DROP TABLE IF EXISTS tempfiles;
 
 --
 -- Create new table to store all data
 --
+--DROP TABLE IF EXISTS tempfiles;
 CREATE TABLE tempfiles(
-    id          VARCHAR(64) PRIMARY KEY NOT NULL UNIQUE,
-    iv          BYTEA NOT NULL,
-    content     BYTEA NOT NULL,
-    views       INT NOT NULL,
-    max_views   INT NOT NULL,
-    timestamp   INT NOT NULL
+    id              VARCHAR(32) PRIMARY KEY NOT NULL UNIQUE,
+    iv              BYTEA NOT NULL,
+    content         BYTEA NOT NULL,
+    views           INT DEFAULT 0 NOT NULL,
+    max_views       INT DEFAULT NULL,
+    delete_password VARCHAR(32) NOT NULL,
+    timestamp       timestamp DEFAULT now() NOT NULL
 );
+
+
+--
+-- Create trigger function to remove files when they hit max_views
+--
+--DROP FUNCTION public.max_views_trigger_func();
+CREATE FUNCTION public.max_views_trigger_func()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF
+AS $BODY$BEGIN
+
+    IF NEW.views >= OLD.max_views THEN
+        DELETE FROM tempfiles WHERE id = id;
+    END IF;
+
+    RETURN NEW;
+
+END$BODY$;
+
+ALTER FUNCTION public.max_views_trigger_func()
+    OWNER TO tempfiles;
+
+
+--
+-- Create trigger to remove files when they hit max_views
+--
+--DROP TRIGGER max_views_trigger ON public.tempfiles;
+CREATE TRIGGER max_views_trigger
+    AFTER UPDATE OF views
+    ON public.tempfiles
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.max_views_trigger_func();
 

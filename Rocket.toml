@@ -1,6 +1,13 @@
 [global.databases.tempfiles]
 url = "postgresql://tempfiles:tempfiles@localhost:5432/tempfiles"
 
+# 5 MiB = 5242880
+# 10 MiB = 10485760
+# 25 MiB = 26214400
+# 50 MiB = 52428800
+# 75 MiB = 78643200
+# 100 MiB = 104857600
+
 [development]
 address = "0.0.0.0"
 port = 5000

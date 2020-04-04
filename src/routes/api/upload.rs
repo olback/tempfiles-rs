@@ -18,16 +18,15 @@ use serde::Serialize;
 use serde_json;
 use std::io::Cursor;
 use crate::{
-    file_id::{FileId, Password},
+    crypto::Crypto,
+    content::Content,
+    file_id::FileId,
+    password::Password,
     config::TempfilesConfig,
-    db::TempfilesDatabaseConn
+    db::{TempfilesDatabaseConn, schemas::TempfilesDatabase}
 };
 use super::ApiError;
 use std::io::Read;
-use aead::{Aead, NewAead, generic_array::GenericArray};
-use aes_gcm_siv;
-use rand::{self, Rng};
-use diesel::prelude::*;
 
 #[derive(Serialize)]
 pub struct ApiUploadResponse {
@@ -54,36 +53,40 @@ impl<'a> Responder<'a> for ApiUploadResponse {
 #[post("/upload?<filename>&<maxviews>", data = "<data>")]
 pub fn upload(
     filename: Option<&RawStr>,
-    maxviews: Option<usize>,
+    maxviews: Option<i32>,
     content_type: Option<&ContentType>,
     data: Data,
     tc: State<TempfilesConfig>,
     db: TempfilesDatabaseConn
 ) -> Result<ApiUploadResponse, ApiError> {
 
-    let mut raw_data = Vec::<u8>::new();
-    let size = data.open().take(tc.max_file_size as u64).read_to_end(&mut raw_data)?;
+    let mut content = Content {
+        filename: filename.map(|f| f.to_string()),
+        content_type: content_type.map(|ct| ct.to_string()),
+        data: Vec::<u8>::with_capacity(3 * 1024 * 1024)
+    };
 
-    // println!("size: {}", size);
-    // println!("{:?}", filename);
-    // println!("{:?}", maxviews);
-    // println!("{:?}", content_type);
-    // println!("vec: {:?}", raw_data);
+    let size = data.open().take(tc.max_file_size as u64).read_to_end(&mut content.data)?;
 
+    // Check for invalid data
     if size == 0 {
         return Err(ApiError::new("File may not be empty", 422))
     } else if size == tc.max_file_size {
         return Err(ApiError::new("File too large", 422))
+    } else if maxviews.is_some() && Some(1) > maxviews {
+        return Err(ApiError::new("Max views may not be below 1", 422))
     }
 
     let id = FileId::new(16);
-    let password = Password::new(32); // This has to be 32 bytes!
-    let delete_password = Password::new(16);
-    let key = GenericArray::from(password.as_array32());
-    let iv = GenericArray::from(rand::thread_rng().gen::<[u8; 12]>());
+    let password = Password::new();
+    let delete_password = Password::new();
 
-    // let cipher = aes_gcm_siv::Aes256GcmSiv::new(key);
-    // let enc = cipher.encrypt(&iv, &*raw_data)?;
+    let iv = Crypto::gen_iv();
+    let content_bytes = bincode::serialize(&content)?;
+
+    let enc = Crypto::encrypt(iv, password.as_array32(), &content_bytes)?;
+
+    TempfilesDatabase::insert(&db, id.as_ref(), &iv, &enc, &maxviews, delete_password.as_ref())?;
 
     Ok(ApiUploadResponse {
         status: 201,

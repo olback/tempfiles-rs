@@ -282,27 +282,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "diesel"
-version = "1.4.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "33d7ca63eb2efea87a7f56a283acc49e2ce4b2bd54adf7465dc1d81fef13d8fc"
-dependencies = [
- "byteorder",
- "diesel_derives",
-]
-
-[[package]]
-name = "diesel_derives"
-version = "1.4.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "45f5098f628d02a7a0f68ddba586fb61e80edec3bdc1be3b921f4ceec60858d3"
-dependencies = [
- "proc-macro2 1.0.9",
- "quote 1.0.3",
- "syn 1.0.17",
-]
-
-[[package]]
 name = "digest"
 version = "0.7.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1357,7 +1336,6 @@ dependencies = [
  "aead",
  "aes-gcm-siv",
  "bincode",
- "diesel",
  "rand 0.7.3",
  "rocket",
  "rocket_contrib",

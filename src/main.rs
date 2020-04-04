@@ -15,8 +15,11 @@ mod routes;
 mod catchers;
 mod macros;
 mod file_id;
+mod password;
 mod config;
 mod db;
+mod content;
+mod crypto;
 
 fn main() {
 
@@ -30,16 +33,16 @@ fn main() {
         routes::download::download
     ])
     .mount("/api", routes![
-        // routes::api::get,
         routes::api::upload::upload,
-        // routes::api::delete
+        routes::api::delete::delete
     ])
     .register(catchers![
         catchers::client::bad_request,
         catchers::client::forbidden,
         catchers::client::not_found,
         catchers::client::unprocessable_entity,
-        catchers::server::internal_server_error
+        catchers::server::internal_server_error,
+        catchers::server::service_unavailable
     ])
     .attach(db::TempfilesDatabaseConn::fairing())
     .attach(AdHoc::on_attach("Tempfiles config", |rocket| {
