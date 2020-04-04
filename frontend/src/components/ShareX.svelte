@@ -6,4 +6,8 @@
 
     @import 'src/scss/variables';
 
+    h1 {
+        color: $accent;
+    }
+
 </style>
