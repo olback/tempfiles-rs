@@ -13,9 +13,22 @@
     let loading = false;
 
     function onInput(evt) {
-        filename = evt.target.value.replace('C:\\fakepath\\', '');
+
+        filename = evt.target.files[0].name;
         label.innerText = filename;
         label.classList.remove('none');
+
+    }
+
+    function getContentType(file) {
+
+        if (file.type.includes('text')) {
+            return `${file.type};charset=UTF-8`
+        } else {
+            return file.type
+        }
+
+
     }
 
     function uploadFile(evt) {
@@ -41,7 +54,10 @@
 
         fetch(url.toString(), {
             method: 'POST',
-            body: input.files[0]
+            body: input.files[0],
+            headers: {
+                'Content-Type': getContentType(input.files[0])
+            }
         })
         .then(res => res.json())
         .then(json => {

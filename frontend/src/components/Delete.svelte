@@ -11,8 +11,6 @@
 
         const url = config.apiUrl.join(`delete/${id}/${delete_password}`);
 
-        console.log(url.toString());
-
         fetch(url.toString(), {
             method: 'DELETE'
         })
