@@ -33,7 +33,8 @@ pub struct ApiUploadResponse {
     pub status: u16,
     pub id: String,
     pub password: String,
-    pub delete_password: String
+    pub delete_password: String,
+    pub download_url: String
 }
 
 impl<'a> Responder<'a> for ApiUploadResponse {
@@ -88,11 +89,16 @@ pub fn upload(
 
     TempfilesDatabase::insert(&db, id.as_ref(), &iv, &enc, &maxviews, delete_password.as_ref())?;
 
+    let file_id = id.into();
+    let file_password = password.into();
+    let download_url = format!("{}/d/{}/{}", tc.base_url, file_id, file_password);
+
     Ok(ApiUploadResponse {
         status: 201,
-        id: id.into(),
-        password: password.into(),
+        id: file_id,
+        password: file_password,
         delete_password: delete_password.into(),
+        download_url: download_url
     })
 
 }

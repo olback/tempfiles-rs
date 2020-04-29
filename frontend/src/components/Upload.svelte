@@ -92,7 +92,7 @@
     <div class="success">
 
         <label for="success-url">Link</label>
-        <input on:click={setClipboard} id="success-url" type="text" readonly value="{`${window.origin}/d/${upload_success.id}/${upload_success.password}`}">
+        <input on:click={setClipboard} id="success-url" type="text" readonly value="{upload_success.download_url}">
 
         <label for="success-id">ID</label>
         <input on:click={setClipboard} id="success-id" type="text" readonly value={upload_success.id}>

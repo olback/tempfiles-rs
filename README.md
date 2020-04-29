@@ -30,6 +30,11 @@ Inspired by [Carlgo11/TempFiles](https://github.com/carlgo11/TempFiles)
 source scripts/env
 ```
 
+**Use the nightly toolchain**
+```terminal
+rustup override set nightly
+```
+
 **Add support for musl targets:**
 ```terminal
 rustup target add x86_64-unknown-linux-musl --toolchain=nightly
