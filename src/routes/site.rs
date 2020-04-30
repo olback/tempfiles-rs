@@ -7,7 +7,8 @@ use crate::config::TempfilesConfig;
 struct IndexContext<'c> {
     version: &'c str,
     max_file_size: usize,
-    name: String
+    name: String,
+    url: String
 }
 
 impl<'c> IndexContext<'c> {
@@ -17,7 +18,8 @@ impl<'c> IndexContext<'c> {
         Self {
             version: include_str!("../../version.txt").trim(),
             max_file_size: tc.max_file_size / (1024 * 1024),
-            name: tc.name.clone()
+            name: tc.name.clone(),
+            url: tc.base_url.clone()
         }
     }
 

@@ -4,15 +4,23 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="version" content="{{version}}">
+    <meta name="description", conent="{{name}} - Share files up to {{max_file_size}}MiB for 24 hours">
 
-    <title>{{name}} - Share files up tp {{max_file_size}}MiB for 24 hours</title>
+    {{!-- OPG --}}
+    <meta property="og:title", content="{{name}} - Temporary File Storage">
+    <meta property="og:image", content="{{url}}/assets/icon.png">
+    <meta property="og:url", content="{{url}}">
+    <meta property="og:description", content="{{name}} - Share files up to {{max_file_size}}MiB for 24 hours">
 
-    <!-- <link rel="icon" type="image/png" href="/assets/favicon.png"> -->
+    <title>{{name}} - Share files up to {{max_file_size}}MiB for 24 hours</title>
+
+    <link rel="icon" type="image/png" href="/assets/icon.png">
 
     {{!-- Font Awesome --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" integrity="sha256-h20CPZ0QyXlBuAw7A+KluUYx/3pK+c7lYEpqLTlxjYQ=" crossorigin="anonymous" />
 
 
+    {{!-- CSS --}}
     <link rel="stylesheet" href="/assets/global.min.css">
     <link rel="stylesheet" href="/assets/bundle.css">
 
