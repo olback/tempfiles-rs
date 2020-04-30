@@ -28,11 +28,12 @@ CREATE FUNCTION public.max_views_trigger_func()
     VOLATILE NOT LEAKPROOF
 AS $BODY$BEGIN
 
-    IF NEW.views >= OLD.max_views THEN
-        DELETE FROM tempfiles WHERE id = id;
+    IF OLD.max_views IS NOT NULL AND NEW.views >= OLD.max_views THEN
+        DELETE FROM public.tempfiles WHERE "id" = OLD.id;
+        RETURN NULL;
     END IF;
 
-    RETURN NEW;
+    RETURN OLD;
 
 END$BODY$;
 
