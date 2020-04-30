@@ -1,0 +1,15 @@
+--
+-- Tempfiles-rs Database extensions
+--
+
+--
+-- Create extension pg_cron
+--
+create extension "pg_cron";
+
+
+--
+-- Schedule tasks
+--
+select cron.schedule('0 * * * *', $$DELETE FROM public.tempfiles WHERE timestamp < now() - interval '24 hours'$$);
+select cron.schedule('1 * * * *', 'VACUUM');
