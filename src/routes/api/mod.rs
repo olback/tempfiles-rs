@@ -16,6 +16,7 @@ use crate::internal_server_error_from;
 
 pub mod upload;
 pub mod delete;
+pub mod metadata;
 
 #[derive(Serialize, Debug)]
 pub struct ApiError {
@@ -32,6 +33,12 @@ impl ApiError {
             status: status,
             message: format!("{}", message)
         }
+
+    }
+
+    pub fn not_found() -> Self {
+
+        Self::new("Not Found", 404)
 
     }
 

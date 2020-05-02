@@ -38,7 +38,8 @@ fn main() {
     ])
     .mount("/api", routes![
         routes::api::upload::upload,
-        routes::api::delete::delete
+        routes::api::delete::delete,
+        routes::api::metadata::metadata
     ])
     .register(catchers![
         catchers::client::bad_request,

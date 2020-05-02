@@ -61,6 +61,28 @@
 
     </section>
 
+        <section>
+
+        <h2>Metadata</h2>
+
+        <div class="url">
+            <span class="method">GET</span>
+            <span class="url">/api/metadata/&lt;id&gt;/&lt;password&gt;</span>
+        </div>
+
+        <code class="response">
+            <pre>
+&#123;
+    "status": 200,
+    "content_type": "audio/ogg",
+    "content_length": 118118,
+    "filename": "En-au-oof.ogg"
+&#125;
+            </pre>
+        </code>
+
+    </section>
+
     <section>
 
         <h2>Delete</h2>

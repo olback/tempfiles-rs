@@ -49,10 +49,7 @@ pub fn delete(
 
     match TempfilesDatabase::delete(&db, id.as_ref(), delete_password.as_ref())? {
 
-        0 => Err(ApiError {
-            status: 404,
-            message: "Not found".into()
-        }),
+        0 => Err(ApiError::not_found()),
 
         1 => Ok(ApiDeleteResponse {
             status: 200,

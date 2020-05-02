@@ -8,7 +8,8 @@ use crate::{
         schemas::TempfilesDatabase
     },
     file_id::FileId,
-    password::Password
+    password::Password,
+    some
 };
 
 #[get("/<id>/<password>")]
@@ -16,57 +17,17 @@ pub fn download(id: FileId, password: Password, db: TempfilesDatabaseConn) -> Re
 
     let row = TempfilesDatabase::get_by_id(&db, id.as_ref())?;
 
-    Ok(match row {
+    if let Some(ref data) = row {
 
-        Some(ref data) => {
+        let ref content_bytes = some!(Crypto::decrypt(data.iv, password.as_array32(), &data.content));
+        let content = bincode::deserialize::<Content>(content_bytes)?;
 
-            match Crypto::decrypt(data.iv, password.as_array32(), &data.content) {
+        drop(TempfilesDatabase::increment_views(&db, &data.id));
 
-                Ok(ref content_bytes) => {
+        return Ok(Some(content))
 
-                    match bincode::deserialize::<Content>(content_bytes) {
+    }
 
-                        Ok(content) => {
-
-                            drop(TempfilesDatabase::increment_views(&db, &data.id));
-
-                            // match data.max_views {
-
-                            //     drop(TempfilesDatabase::increment_views(&db, &data.id))
-
-                            //     Some(max_views) => {
-
-                            //         if data.views + 1 == max_views {
-
-                            //             drop(TempfilesDatabase::delete(&db, &data.id, &data.delete_password));
-
-                            //         } else {
-
-                            //             drop(TempfilesDatabase::increment_views(&db, &data.id))
-
-                            //         }
-
-                            //     },
-                            //     None => {} // No reason to count views if max_views is None
-
-                            // }
-
-                            Some(content)
-                        },
-                        Err(_) => None
-
-                    }
-
-                },
-
-                Err(_) => None
-
-            }
-
-        },
-
-        None => None
-
-    })
+    Ok(None)
 
 }
