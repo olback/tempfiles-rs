@@ -96,8 +96,8 @@ impl TempfilesDatabase {
         let row = rows.get(0);
 
         Ok(TempfilesDatabaseStats {
-            size: (row.get::<_, i64>(0)) as u32,
-            files: (row.get::<_, i64>(1)) as u32,
+            size: (row.get::<_, Option<i64>>(0)).unwrap_or(0) as u32,
+            files: (row.get::<_, Option<i64>>(1)).unwrap_or(0) as u32,
         })
 
     }
