@@ -1,25 +1,13 @@
-use rocket::{
-    get,
-    http::{
-        ContentType,
-        Status
-    },
-    request::Request,
-    response::{
-        self,
-        Response,
-        Responder
-    }
-};
+use rocket::get;
 use serde::Serialize;
 use serde_json;
-use std::io::Cursor;
 use crate::{
     file_id::FileId,
     password::Password,
     db::{TempfilesDatabaseConn, schemas::TempfilesDatabase},
     content::Content,
-    crypto::Crypto
+    crypto::Crypto,
+    impl_responder
 };
 use super::ApiError;
 
@@ -31,19 +19,7 @@ pub struct ApiMetadataResponse {
     pub filename: Option<String>
 }
 
-impl<'a> Responder<'a> for ApiMetadataResponse {
-
-    fn respond_to(self, _: &Request) -> response::Result<'a> {
-
-        Response::build()
-            .header(ContentType::JSON)
-            .status(Status::from_code(self.status).unwrap())
-            .sized_body(Cursor::new(serde_json::to_string_pretty(&self).unwrap()))
-            .ok()
-
-    }
-
-}
+impl_responder!(ApiMetadataResponse);
 
 #[get("/metadata/<id>/<password>")]
 pub fn metadata(

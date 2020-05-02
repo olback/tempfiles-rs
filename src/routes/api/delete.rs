@@ -1,23 +1,11 @@
-use rocket::{
-    delete,
-    http::{
-        ContentType,
-        Status
-    },
-    request::Request,
-    response::{
-        self,
-        Response,
-        Responder
-    }
-};
+use rocket::delete;
 use serde::Serialize;
 use serde_json;
-use std::io::Cursor;
 use crate::{
     file_id::FileId,
     password::Password,
-    db::{TempfilesDatabaseConn, schemas::TempfilesDatabase}
+    db::{TempfilesDatabaseConn, schemas::TempfilesDatabase},
+    impl_responder
 };
 use super::ApiError;
 
@@ -26,19 +14,8 @@ pub struct ApiDeleteResponse {
     pub status: u16
 }
 
-impl<'a> Responder<'a> for ApiDeleteResponse {
+impl_responder!(ApiDeleteResponse);
 
-    fn respond_to(self, _: &Request) -> response::Result<'a> {
-
-        Response::build()
-            .header(ContentType::JSON)
-            .status(Status::from_code(self.status).unwrap())
-            .sized_body(Cursor::new(serde_json::to_string_pretty(&self).unwrap()))
-            .ok()
-
-    }
-
-}
 
 #[delete("/delete/<id>/<delete_password>")]
 pub fn delete(

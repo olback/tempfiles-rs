@@ -5,7 +5,7 @@
 --
 -- Create new table to store all data
 --
---DROP TABLE IF EXISTS tempfiles;
+DROP TABLE IF EXISTS tempfiles;
 CREATE TABLE tempfiles(
     id              VARCHAR(32) PRIMARY KEY NOT NULL UNIQUE,
     iv              BYTEA NOT NULL,
@@ -18,9 +18,29 @@ CREATE TABLE tempfiles(
 
 
 --
+-- Function to get stats about stored data
+--
+DROP FUNCTION IF EXISTS public.get_stats;
+CREATE FUNCTION public.get_stats()
+    RETURNS TABLE (total_size bigint, amount bigint)
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF
+AS $BODY$BEGIN
+    RETURN QUERY
+    SELECT * FROM
+    (SELECT SUM("lengths") AS total_size FROM (SELECT OCTET_LENGTH(content) AS lengths FROM public.tempfiles) AS lengths) AS _lengths,
+    (SELECT COUNT("id") AS amount FROM public.tempfiles) AS _count;
+END$BODY$;
+
+ALTER FUNCTION public.get_stats()
+    OWNER TO tempfiles;
+
+
+--
 -- Create trigger function to remove files when they hit max_views
 --
---DROP FUNCTION public.max_views_trigger_func();
+DROP FUNCTION IF EXISTS public.max_views_trigger_func();
 CREATE FUNCTION public.max_views_trigger_func()
     RETURNS trigger
     LANGUAGE 'plpgsql'
@@ -44,7 +64,7 @@ ALTER FUNCTION public.max_views_trigger_func()
 --
 -- Create trigger to remove files when they hit max_views
 --
---DROP TRIGGER max_views_trigger ON public.tempfiles;
+DROP TRIGGER IF EXISTS max_views_trigger ON public.tempfiles;
 CREATE TRIGGER max_views_trigger
     AFTER UPDATE OF views
     ON public.tempfiles

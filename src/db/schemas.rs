@@ -12,6 +12,12 @@ pub struct TempfilesDatabaseRow {
     // pub timestamp: f64
 }
 
+#[derive(Debug)]
+pub struct TempfilesDatabaseStats {
+    pub size: u32,
+    pub files: u32
+}
+
 pub struct TempfilesDatabase;
 
 impl TempfilesDatabase {
@@ -80,6 +86,19 @@ impl TempfilesDatabase {
     pub fn increment_views(conn: &postgres::Connection, id: &String) -> Result<u64, postgres::Error> {
 
         Ok(conn.execute("UPDATE tempfiles SET views = views + 1 WHERE id = $1", &[&id])?)
+
+    }
+
+    pub fn get_stats(conn: &postgres::Connection) -> Result<TempfilesDatabaseStats, postgres::Error> {
+
+        let rows = conn.query("select * from get_stats()", &[])?;
+
+        let row = rows.get(0);
+
+        Ok(TempfilesDatabaseStats {
+            size: (row.get::<_, i64>(0)) as u32,
+            files: (row.get::<_, i64>(1)) as u32,
+        })
 
     }
 

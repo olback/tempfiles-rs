@@ -4,26 +4,19 @@ use rocket::{
     State,
     http::{
         ContentType,
-        RawStr,
-        Status
+        RawStr
     },
-    request::Request,
-    response::{
-        self,
-        Response,
-        Responder
-    }
 };
 use serde::Serialize;
 use serde_json;
-use std::io::Cursor;
 use crate::{
     crypto::Crypto,
     content::Content,
     file_id::FileId,
     password::Password,
     config::TempfilesConfig,
-    db::{TempfilesDatabaseConn, schemas::TempfilesDatabase}
+    db::{TempfilesDatabaseConn, schemas::TempfilesDatabase},
+    impl_responder
 };
 use super::ApiError;
 use std::io::Read;
@@ -37,19 +30,7 @@ pub struct ApiUploadResponse {
     pub download_url: String
 }
 
-impl<'a> Responder<'a> for ApiUploadResponse {
-
-    fn respond_to(self, _: &Request) -> response::Result<'a> {
-
-        Response::build()
-            .header(ContentType::JSON)
-            .status(Status::from_code(self.status).unwrap())
-            .sized_body(Cursor::new(serde_json::to_string_pretty(&self).unwrap()))
-            .ok()
-
-    }
-
-}
+impl_responder!(ApiUploadResponse);
 
 #[post("/upload?<filename>&<maxviews>", data = "<data>")]
 pub fn upload(
