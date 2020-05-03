@@ -110,6 +110,8 @@
 
     <h1>Upload a file</h1>
 
+    <h2>{document.querySelector('meta[property="og:description"]').content}</h2>
+
     <div class="upload">
 
         <div class="file-input">
@@ -143,8 +145,13 @@
 
     @import 'src/scss/variables';
 
-    h1 {
+    h1, h2 {
         color: $accent;
+    }
+
+    h2 {
+        font-size: 16pt;
+        font-weight: 400;
     }
 
     div.success {
