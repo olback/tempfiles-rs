@@ -54,7 +54,8 @@
     "status": 201,
     "id": "d5mSqMV5VzcCm4Jy",
     "password": "Sn86BrP99kghljLK9bavY1DLwjuvN8rL",
-    "delete_password": "KX0mQpVJPyyI8WNld7OsgifOTOxc8AiE"
+    "delete_password": "KX0mQpVJPyyI8WNld7OsgifOTOxc8AiE",
+    "download_url": "..."
 &#125;
             </pre>
         </code>
