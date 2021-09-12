@@ -3,7 +3,7 @@ version: '3.1'
 services:
 
   postgres:
-    image: olback/postgres12-pg-cron:latest
+    image: olback/postgres12-pg-cron:2020-06-01
     command: "-c shared_preload_libraries='pg_cron' -c cron.database_name='${POSTGRES_USER}'"
     restart: unless-stopped
     # ports:
@@ -16,24 +16,20 @@ services:
       - ./scripts/postgres:/scripts/
 
   server:
-    image: alpine
+    image: registry.olback.dev/olback/tempfiles-rs
     restart: unless-stopped
-    command: /tempfiles/scripts/entrypoint.sh
     tty: true
+    depends_on:
+      - postgres
     ports:
       - "${ROCKET_PORT}:${ROCKET_PORT}"
     environment:
-      ROCKET_ENV: ${ENV}
       ROCKET_ADDRESS: ${ROCKET_ADDRESS}
       ROCKET_PORT: ${ROCKET_PORT}
       ROCKET_WORKERS: ${ROCKET_WORKERS}
-      ROCKET_LOG: ${ROCKET_LOG}
-      ROCKET_LIMITS: "{forms=${ROCKET_LIMITS_FORMS}, files=${LIMITS_FILES}}"
+      ROCKET_LOG_LEVEL: ${ROCKET_LOG_LEVEL}
+      ROCKET_LIMITS: "{forms=${ROCKET_LIMITS_FORMS}, bytes=${ROCKET_LIMITS_BYTES}}"
       ROCKET_DATABASES: "{tempfiles={url=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_USER}}}"
-      ROCKET_BASE_URL: ${BASE_URL}
-      ROCKET_NAME: ${NAME}
-    volumes:
-      - "./assets:/tempfiles/assets"
-      - "./scripts/server:/tempfiles/scripts"
-      - "./target/x86_64-unknown-linux-musl:/tempfiles/target"
-      - "./templates:/tempfiles/templates"
+      ROCKET_LIMITS_BYTES: ${ROCKET_LIMITS_BYTES}
+      TEMPFILES_BASE_URL: ${TEMPFILES_BASE_URL}
+      TEMPFILES_NAME: ${TEMPFILES_NAME}

@@ -1,11 +1,13 @@
-use rocket::{get, State};
-use rocket_contrib::json::Json;
-use crate::config::TempfilesConfig;
-use serde::Serialize;
+use {
+    crate::config::TempfilesConfig,
+    rocket::serde::json::Json,
+    rocket::{get, State},
+    serde::Serialize,
+};
 
 #[derive(Serialize)]
 pub struct Parameters<'a> {
-    filename: &'a str
+    filename: &'a str,
 }
 
 #[allow(non_snake_case)]
@@ -19,12 +21,11 @@ pub struct ShareXConfig<'a> {
     Parameters: Parameters<'a>,
     Body: &'a str,
     URL: String,
-    DeletionURL: String
+    DeletionURL: String,
 }
 
 #[get("/sharex.sxcu")]
-pub fn sharex(tc: State<TempfilesConfig>,) -> Json<ShareXConfig> {
-
+pub async fn sharex(tc: &State<TempfilesConfig>) -> Json<ShareXConfig<'static>> {
     let sharex_config = ShareXConfig {
         Version: "13.1.0",
         Name: tc.name.clone(),
@@ -32,13 +33,15 @@ pub fn sharex(tc: State<TempfilesConfig>,) -> Json<ShareXConfig> {
         RequestMethod: "POST",
         RequestURL: format!("{}/api/upload", tc.base_url),
         Parameters: Parameters {
-            filename: "$filename$"
+            filename: "$filename$",
         },
         Body: "Binary",
         URL: format!("{}/d/$json:id$/$json:password$", tc.base_url),
-        DeletionURL: format!("{}/api/delete/$json:id$/$json:delete_password$", tc.base_url)
+        DeletionURL: format!(
+            "{}/api/delete/$json:id$/$json:delete_password$",
+            tc.base_url
+        ),
     };
 
     Json(sharex_config)
-
 }

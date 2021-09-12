@@ -4,3 +4,4 @@ bundle.*
 version.txt
 /data/
 .env
+/tempfiles-rs

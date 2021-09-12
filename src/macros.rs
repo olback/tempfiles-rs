@@ -15,7 +15,7 @@ macro_rules! some {
     ($e:expr) => {
         match $e {
             Ok(v) => v,
-            Err(_) => return Ok(None)
+            Err(_) => return Ok(None),
         }
     };
 }
@@ -23,12 +23,13 @@ macro_rules! some {
 #[macro_export]
 macro_rules! impl_responder {
     ($t:ty) => {
-        impl<'a> rocket::response::Responder<'a> for $t {
-            fn respond_to(self, _: &rocket::request::Request) -> rocket::response::Result<'a> {
+        impl<'r> rocket::response::Responder<'r, 'static> for $t {
+            fn respond_to(self, _: &rocket::request::Request) -> rocket::response::Result<'static> {
+                let content = serde_json::to_string_pretty(&self).unwrap();
                 rocket::response::Response::build()
                     .header(rocket::http::ContentType::JSON)
                     .status(rocket::http::Status::from_code(self.status).unwrap())
-                    .sized_body(std::io::Cursor::new(serde_json::to_string_pretty(&self).unwrap()))
+                    .sized_body(content.len(), std::io::Cursor::new(content))
                     .ok()
             }
         }
