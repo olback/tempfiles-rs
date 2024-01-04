@@ -83,6 +83,6 @@ pub async fn upload(
         id: file_id,
         password: file_password,
         delete_password: delete_password.into(),
-        download_url: download_url,
+        download_url,
     })
 }

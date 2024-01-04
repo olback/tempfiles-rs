@@ -11,16 +11,6 @@ macro_rules! internal_server_error_from {
 }
 
 #[macro_export]
-macro_rules! some {
-    ($e:expr) => {
-        match $e {
-            Ok(v) => v,
-            Err(_) => return Ok(None),
-        }
-    };
-}
-
-#[macro_export]
 macro_rules! impl_responder {
     ($t:ty) => {
         impl<'r> rocket::response::Responder<'r, 'static> for $t {

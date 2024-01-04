@@ -26,17 +26,17 @@ impl<'c> IndexContext<'c> {
 
 #[get("/")]
 pub fn index(tc: &State<TempfilesConfig>) -> Template {
-    Template::render("index", IndexContext::new(&tc))
+    Template::render("index", IndexContext::new(tc))
 }
 
 #[get("/<tab>")]
 pub fn index_tab(tab: &str, tc: &State<TempfilesConfig>) -> Option<Template> {
     match tab {
-        "upload" => Some(Template::render("index", IndexContext::new(&tc))),
-        "download" => Some(Template::render("index", IndexContext::new(&tc))),
-        "delete" => Some(Template::render("index", IndexContext::new(&tc))),
-        "sharex" => Some(Template::render("index", IndexContext::new(&tc))),
-        "api" => Some(Template::render("index", IndexContext::new(&tc))),
+        "upload" => Some(Template::render("index", IndexContext::new(tc))),
+        "download" => Some(Template::render("index", IndexContext::new(tc))),
+        "delete" => Some(Template::render("index", IndexContext::new(tc))),
+        "sharex" => Some(Template::render("index", IndexContext::new(tc))),
+        "api" => Some(Template::render("index", IndexContext::new(tc))),
         _ => None,
     }
 }

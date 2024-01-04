@@ -87,28 +87,26 @@ impl TempfilesDatabase {
         id: String,
         delete_password: String,
     ) -> Result<u64, postgres::Error> {
-        Ok(conn
-            .run(move |c| {
-                c.execute(
-                    "DELETE FROM tempfiles WHERE id = $1 AND delete_password = $2",
-                    &[&id, &delete_password],
-                )
-            })
-            .await?)
+        conn.run(move |c| {
+            c.execute(
+                "DELETE FROM tempfiles WHERE id = $1 AND delete_password = $2",
+                &[&id, &delete_password],
+            )
+        })
+        .await
     }
 
     pub async fn increment_views(
         conn: &mut TempfilesDatabaseConn,
         id: String,
     ) -> Result<u64, postgres::Error> {
-        Ok(conn
-            .run(move |c| {
-                c.execute(
-                    "UPDATE tempfiles SET views = views + 1 WHERE id = $1",
-                    &[&id],
-                )
-            })
-            .await?)
+        conn.run(move |c| {
+            c.execute(
+                "UPDATE tempfiles SET views = views + 1 WHERE id = $1",
+                &[&id],
+            )
+        })
+        .await
     }
 
     pub async fn get_stats(

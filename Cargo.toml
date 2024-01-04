@@ -2,15 +2,14 @@
 name = "tempfiles-rs"
 version = "0.1.0"
 authors = ["Edwin Svensson <tempfilesrs@olback.net>"]
-edition = "2018"
+edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-rocket = { version = "0.5.0-rc.1", features = [ "json" ] }
-#rocket_contrib = { version = "0.4", default-features = false, features = [ "handlebars_templates", "serve", "json", "databases", "postgres_pool" ] }
-rocket_dyn_templates = { version = "0.1.0-rc.1", features = [ "handlebars" ], default-features = false }
-rocket_sync_db_pools= { version = "0.1.0-rc.1", features = [ "postgres_pool" ] }
+rocket = { version = "0.5.0", features = [ "json" ] }
+rocket_dyn_templates = { version = "0.1.0", features = [ "handlebars" ], default-features = false }
+rocket_sync_db_pools= { version = "0.1.0", features = [ "postgres_pool" ] }
 rand = "0.8"
 serde = { version = "1", features = [ "derive" ] }
 serde_json = "1"

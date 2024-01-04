@@ -11,7 +11,7 @@ pub fn bad_request(_: &Request) -> Template {
         message: "Bad request".into(),
     };
 
-    Template::render("error", &context)
+    Template::render("error", context)
 }
 
 #[catch(403)]
@@ -21,7 +21,7 @@ pub fn forbidden(_: &Request) -> Template {
         message: "Forbidden".into(),
     };
 
-    Template::render("error", &context)
+    Template::render("error", context)
 }
 
 #[catch(404)]

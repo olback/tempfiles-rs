@@ -8,8 +8,9 @@ use {
 pub struct Password(FileId);
 
 impl Password {
+    #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
-        Self(FileId::new(32))
+        Password(FileId::new(32))
     }
 
     pub fn as_array32(&self) -> [u8; 32] {
@@ -34,8 +35,8 @@ impl<'a> FromParam<'a> for Password {
     }
 }
 
-impl Into<String> for Password {
-    fn into(self) -> String {
-        self.0.into()
+impl From<Password> for String {
+    fn from(val: Password) -> Self {
+        val.0.into()
     }
 }

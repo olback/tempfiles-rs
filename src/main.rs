@@ -13,8 +13,8 @@ mod macros;
 mod password;
 mod routes;
 
-#[rocket::main]
-async fn main() -> Result<(), rocket::Error> {
+#[rocket::launch]
+async fn launch() -> _ {
     Rocket::build()
         .mount(
             "/",
@@ -52,6 +52,4 @@ async fn main() -> Result<(), rocket::Error> {
             let tempfiles_config = config::TempfilesConfig::from_env();
             rocket.manage(tempfiles_config)
         }))
-        .launch()
-        .await
 }

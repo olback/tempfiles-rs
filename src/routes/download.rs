@@ -5,7 +5,6 @@ use crate::{
     file_id::FileId,
     password::Password,
     routes::api::ApiError,
-    some,
 };
 use rocket::get;
 
@@ -18,12 +17,12 @@ pub async fn download(
     let row = TempfilesDatabase::get_by_id(&mut db, id.into()).await?;
 
     if let Some(ref data) = row {
-        let ref content_bytes = some!(Crypto::decrypt(
-            data.iv,
-            password.as_array32(),
-            &data.content
-        ));
-        let content = bincode::deserialize::<Content>(content_bytes)?;
+        let content_bytes = match Crypto::decrypt(data.iv, password.as_array32(), &data.content) {
+            Ok(v) => v,
+            Err(_) => return Err(ApiError::not_found()),
+        };
+
+        let content = bincode::deserialize::<Content>(&content_bytes)?;
 
         drop(TempfilesDatabase::increment_views(&mut db, data.id.clone()));
 

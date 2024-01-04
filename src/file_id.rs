@@ -54,8 +54,8 @@ impl<'a> FromParam<'a> for FileId {
     }
 }
 
-impl Into<String> for FileId {
-    fn into(self) -> String {
-        self.0
+impl From<FileId> for String {
+    fn from(val: FileId) -> Self {
+        val.0
     }
 }

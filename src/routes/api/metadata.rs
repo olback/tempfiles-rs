@@ -30,11 +30,10 @@ pub async fn metadata(
     let row = TempfilesDatabase::get_by_id(&mut db, id.into()).await?;
 
     if let Some(ref data) = row {
-        let ref content_bytes = match Crypto::decrypt(data.iv, password.as_array32(), &data.content)
-        {
+        let content_bytes = &(match Crypto::decrypt(data.iv, password.as_array32(), &data.content) {
             Ok(v) => v,
             Err(_) => return Err(ApiError::not_found()),
-        };
+        });
 
         let content = bincode::deserialize::<Content>(content_bytes)?;
 

@@ -18,7 +18,7 @@ impl ApiError {
         M: std::fmt::Display,
     {
         Self {
-            status: status,
+            status,
             message: format!("{}", message),
         }
     }

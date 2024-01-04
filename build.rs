@@ -1,9 +1,11 @@
-use std::{process::Command, fs};
+use std::{fs, process::Command};
 
 fn main() {
+    let out = Command::new("git")
+        .args(["rev-parse", "HEAD"])
+        .output()
+        .unwrap()
+        .stdout;
 
-    let out = Command::new("git").args(&["rev-parse", "HEAD"]).output().unwrap().stdout;
-
-    fs::write("version.txt", &out).unwrap();
-
+    fs::write("version.txt", out).unwrap();
 }

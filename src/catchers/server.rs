@@ -11,7 +11,7 @@ pub fn internal_server_error(_: &Request) -> Template {
         message: "Internal Server Error".into(),
     };
 
-    Template::render("error", &context)
+    Template::render("error", context)
 }
 
 #[catch(503)]
@@ -21,5 +21,5 @@ pub fn service_unavailable(_: &Request) -> Template {
         message: "Service Unavailable".into(),
     };
 
-    Template::render("error", &context)
+    Template::render("error", context)
 }
