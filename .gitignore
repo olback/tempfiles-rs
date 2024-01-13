@@ -5,3 +5,14 @@ version.txt
 /data/
 .env
 /tempfiles-rs
+*.crt
+*.key
+*.pem
+*.pfx
+*.p12
+*.csr
+*.srl
+*.der
+*.crl
+*.p7b
+*.p7r

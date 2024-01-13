@@ -25,15 +25,6 @@ Inspired by [Carlgo11/TempFiles](https://github.com/carlgo11/TempFiles)
 * [musl](https://musl.libc.org/)
 * [Rust](https://www.rust-lang.org/) (cargo, rustup)
 
-**Enable AES-NI and CLMUL CPU intrinsics:**
-```terminal
-source scripts/env
-```
-
-**Use the nightly toolchain**
-```terminal
-rustup override set nightly
-```
 
 **Add support for musl targets:**
 ```terminal
