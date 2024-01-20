@@ -1,7 +1,6 @@
 <script>
-
-    import config from '../config.js';
-    import { ParamsBuilder } from '../params-builder.js';
+    import config from "../config.js";
+    import { ParamsBuilder } from "../params-builder.js";
 
     let label;
     let input;
@@ -13,26 +12,20 @@
     let loading = false;
 
     function onInput(evt) {
-
         filename = evt.target.files[0].name;
         label.innerText = filename;
-        label.classList.remove('none');
-
+        label.classList.remove("none");
     }
 
     function getContentType(file) {
-
-        if (file.type.includes('text')) {
-            return `${file.type};charset=UTF-8`
+        if (file.type.includes("text")) {
+            return `${file.type};charset=UTF-8`;
         } else {
-            return file.type
+            return file.type;
         }
-
-
     }
 
     function uploadFile(evt) {
-
         error = null;
 
         if (filename === null) {
@@ -44,84 +37,125 @@
         loading = true;
 
         let params = new ParamsBuilder();
-        params.append('filename', filename);
+        params.append("filename", filename);
         if (maxViews < 26) {
-            params.append('maxviews', maxViews);
+            params.append("maxviews", maxViews);
         }
 
-        const url = config.apiUrl.join('upload');
+        const url = config.apiUrl.join("upload");
         url.search = params.toString();
 
         fetch(url.toString(), {
-            method: 'POST',
+            method: "POST",
             body: input.files[0],
             headers: {
-                'Content-Type': getContentType(input.files[0])
-            }
+                "Content-Type": getContentType(input.files[0]),
+            },
         })
-        .then(res => res.json())
-        .then(json => {
-            if (json.status === 201) {
-                upload_success = json;
-                loading = false;
-            } else {
-                evt.target.disabled = false;
-                loading = false;
-                error = json.message;
-            }
-        })
-        .catch(err => error = err);
-
+            .then((res) => res.json())
+            .then((json) => {
+                if (json.status === 201) {
+                    upload_success = json;
+                    loading = false;
+                } else {
+                    evt.target.disabled = false;
+                    loading = false;
+                    error = json.message;
+                }
+            })
+            .catch((err) => (error = err));
     }
 
     function setClipboard(el) {
-
         el.target.select();
         el.target.setSelectionRange(0, 1000);
 
-        document.execCommand('copy');
-
+        document.execCommand("copy");
     }
-
 </script>
 
 {#if upload_success}
-
     <h1>Success!</h1>
 
     <div class="success">
-
         <label for="success-url">Link</label>
-        <input on:click={setClipboard} id="success-url" type="text" readonly value="{upload_success.download_url}">
+        <input
+            on:click={setClipboard}
+            id="success-url"
+            type="text"
+            readonly
+            value={upload_success.download_url}
+        />
 
         <label for="success-id">ID</label>
-        <input on:click={setClipboard} id="success-id" type="text" readonly value={upload_success.id}>
+        <input
+            on:click={setClipboard}
+            id="success-id"
+            type="text"
+            readonly
+            value={upload_success.id}
+        />
+
+        <label for="success-password">File password</label>
+        <input
+            on:click={setClipboard}
+            id="success-password"
+            type="text"
+            readonly
+            value={upload_success.password}
+        />
 
         <label for="success-delete">Deletion password</label>
-        <input on:click={setClipboard} id="success-delete" type="text" readonly value={upload_success.delete_password}>
+        <input
+            on:click={setClipboard}
+            id="success-delete"
+            type="text"
+            readonly
+            value={upload_success.delete_password}
+        />
 
-        <button on:click={() => {upload_success = null; error = null; filename = null; maxViews = 26}}>
+        <button
+            on:click={() => {
+                upload_success = null;
+                error = null;
+                filename = null;
+                maxViews = 26;
+            }}
+        >
             Upload another
         </button>
-
     </div>
-
 {:else}
-
-    <h1>Upload a file</h1>
+    <h1><i class="fas fa-file-upload"></i>&nbsp;&nbsp;Upload a file</h1>
 
     <h2>{document.querySelector('meta[property="og:description"]').content}</h2>
 
     <div class="upload">
-
         <div class="file-input">
-            <input bind:this={input} on:input={onInput} type="file" id="file-input">
-            <label bind:this={label} for="file-input" class="none">Choose file...</label>
+            <input
+                bind:this={input}
+                on:input={onInput}
+                type="file"
+                id="file-input"
+            />
+            <label bind:this={label} for="file-input" class="none"
+                >Choose file...</label
+            >
         </div>
 
         <div class="max-views">
             <span>Max views</span>
-            <input bind:value={maxViews} on:input={(e) => {maxViewsLabel.innerHTML = e.target.value == 26 ? 'Infinite' : e.target.value}} type="range" min="1" max="26" step="1">
+            <input
+                bind:value={maxViews}
+                on:input={(e) => {
+                    maxViewsLabel.innerHTML =
+                        e.target.value == 26 ? "Infinite" : e.target.value;
+                }}
+                type="range"
+                min="1"
+                max="26"
+                step="1"
+            />
             <span bind:this={maxViewsLabel}>Infinite</span>
         </div>
 
@@ -136,16 +170,14 @@
         {#if error}
             <p class="error">Error: {error}</p>
         {/if}
-
     </div>
-
 {/if}
 
 <style type="text/scss">
+    @import "src/scss/variables";
 
-    @import 'src/scss/variables';
-
-    h1, h2 {
+    h1,
+    h2 {
         color: $accent;
     }
 
@@ -155,7 +187,6 @@
     }
 
     div.success {
-
         display: grid;
         grid-template-columns: auto auto;
         row-gap: 1em;
@@ -168,7 +199,6 @@
         }
 
         input {
-
             padding: 1em;
             background-color: #ddd;
             width: auto;
@@ -177,22 +207,18 @@
             color: $background;
             outline: none;
             font-size: 12pt;
-
         }
 
         button {
             width: max-content;
         }
-
     }
 
     div.upload {
-
         display: grid;
         row-gap: 1.5em;
 
         div.max-views {
-
             color: $accent;
             font-size: 12pt;
             display: grid;
@@ -201,8 +227,7 @@
             justify-items: center;
             font-weight: bold;
 
-            input[type=range] {
-
+            input[type="range"] {
                 justify-self: stretch;
                 -webkit-appearance: none;
                 outline: none;
@@ -253,22 +278,18 @@
                     -webkit-appearance: none;
                     margin-top: -3.6px;
                 }
-
             }
-
         }
-
     }
 
     div.file-input {
-
         // margin: 2em 0;
 
-        input[type=file] {
+        input[type="file"] {
             display: none;
         }
 
-        input[type=range] {
+        input[type="range"] {
             display: inline-block;
             margin: auto;
             margin-top: 2em;
@@ -276,8 +297,7 @@
         }
 
         label {
-
-            padding: .7em 0;
+            padding: 0.7em 0;
             background-color: #ddd;
             cursor: pointer;
             width: auto;
@@ -287,7 +307,7 @@
                 font-style: normal;
                 color: $background;
                 content: "Browse";
-                padding: .7em;
+                padding: 0.7em;
                 margin-right: 1em;
                 background-color: $accent;
                 transition: background-color $transition_time_button ease-in-out;
@@ -301,9 +321,7 @@
                 font-style: italic;
                 color: #555;
             }
-
         }
-
     }
 
     button {
@@ -316,6 +334,7 @@
         outline: none;
         cursor: pointer;
         transition: background-color $transition_time_button ease-in-out;
+        font-weight: bold;
 
         &:hover:not(:disabled) {
             background-color: $accent2;
@@ -325,7 +344,6 @@
             background-color: $accent2;
             cursor: initial;
         }
-
     }
 
     p.error {
@@ -334,5 +352,4 @@
         padding: 1em;
         color: $background;
     }
-
 </style>

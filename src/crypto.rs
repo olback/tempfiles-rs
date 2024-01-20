@@ -1,4 +1,4 @@
-use aead::{generic_array::GenericArray, Aead, Error, NewAead};
+use aead::{generic_array::GenericArray, Aead, Error, KeyInit};
 use aes_gcm_siv::Aes256GcmSiv;
 use rand::{self, Rng};
 

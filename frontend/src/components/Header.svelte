@@ -1,33 +1,53 @@
 <script>
-    import { createEventDispatcher } from 'svelte';
+    import { createEventDispatcher } from "svelte";
     export let tab;
 
     const dispatch = createEventDispatcher();
 
     function setTab(tab) {
-        dispatch('setTab', tab);
+        dispatch("setTab", tab);
     }
 </script>
 
 <header>
     <div class="header-container">
-        <h1><a href="/">Tempfiles</a></h1>
+        <h1>
+            <a href="/"> <i class="fas fa-user-ninja"></i> Tempfiles</a>
+        </h1>
         <div class="buttons">
-            <button on:click={() => setTab("upload") } class="{tab === "upload" ? 'selected' : ''}">Upload</button>
-            <button on:click={() => setTab("download") } class="{tab === "download" ? 'selected' : ''}">Download</button>
-            <button on:click={() => setTab("delete") } class="{tab === "delete" ? 'selected' : ''}">Delete</button>
-            <button on:click={() => setTab("sharex") } class="{tab === "sharex" ? 'selected' : ''}">ShareX</button>
-            <button on:click={() => setTab("api") } class="{tab === "api" ? 'selected' : ''}">API</button>
+            <button
+                on:click={() => setTab("upload")}
+                class={tab === "upload" ? "selected" : ""}
+                ><i class="fas fa-file-upload"></i> Upload</button
+            >
+            <button
+                on:click={() => setTab("download")}
+                class={tab === "download" ? "selected" : ""}
+                ><i class="fas fa-file-download"></i> Download</button
+            >
+            <button
+                on:click={() => setTab("delete")}
+                class={tab === "delete" ? "selected" : ""}
+                ><i class="fas fa-eraser"></i> Delete</button
+            >
+            <button
+                on:click={() => setTab("sharex")}
+                class={tab === "sharex" ? "selected" : ""}
+                ><i class="fas fa-share-square"></i> ShareX</button
+            >
+            <button
+                on:click={() => setTab("api")}
+                class={tab === "api" ? "selected" : ""}
+                ><i class="fas fa-code"></i> API</button
+            >
         </div>
     </div>
 </header>
 
 <style type="text/scss">
-
-    @import 'src/scss/variables';
+    @import "src/scss/variables";
 
     header {
-
         grid-column-start: 1;
         grid-column-end: 4;
         grid-row-start: 1;
@@ -38,7 +58,6 @@
         color: $background;
 
         div.header-container {
-
             grid-column-start: 2;
             grid-column-end: 3;
             display: grid;
@@ -49,20 +68,16 @@
             margin: 0;
 
             * {
-
                 color: $background;
                 margin: 0;
                 align-self: center;
                 text-decoration: none;
-
             }
 
             div.buttons {
-
                 justify-self: right;
 
                 button {
-
                     border: none;
                     background-color: transparent;
                     outline: none;
@@ -70,19 +85,16 @@
                     font-size: 12pt;
                     font-weight: bold;
 
-                    &:hover, &.selected {
+                    &:hover,
+                    &.selected,
+                    &:hover > i,
+                    &.selected > i {
                         background-color: $background;
                         color: $accent;
                         cursor: pointer;
                     }
-
                 }
-
-
             }
-
         }
-
     }
-
 </style>

@@ -1,22 +1,18 @@
 <script></script>
 
-<h1>Api</h1>
+<h1><i class="fas fa-code"></i>&nbsp;&nbsp;Api</h1>
 
 <main>
-
     <section>
-
         <h2>Download</h2>
 
         <div class="url">
             <span class="method">GET</span>
             <span class="url">/d/&lt;id&gt;/&lt;password&gt;</span>
         </div>
-
     </section>
 
     <section>
-
         <h2>Upload</h2>
 
         <div class="url">
@@ -33,7 +29,9 @@
             <div class="param">
                 <span class="name">maxviews</span>
                 <span class="datatype">integer (optional)</span>
-                <span class="description">Maximum times a file can be viewed</span>
+                <span class="description"
+                    >Maximum times a file can be viewed</span
+                >
             </div>
         </div>
 
@@ -44,9 +42,7 @@
             </div>
         </div>
 
-        <div class="body">
-            Body: Raw file data
-        </div>
+        <div class="body">Body: Raw file data</div>
 
         <code class="response">
             <pre>
@@ -59,11 +55,9 @@
 &#125;
             </pre>
         </code>
-
     </section>
 
-        <section>
-
+    <section>
         <h2>Metadata</h2>
 
         <div class="url">
@@ -81,16 +75,16 @@
 &#125;
             </pre>
         </code>
-
     </section>
 
     <section>
-
         <h2>Delete</h2>
 
         <div class="url">
             <span class="method">DELETE</span>
-            <span class="url">/api/delete/&lt;id&gt;/&lt;deletion_password&gt;</span>
+            <span class="url"
+                >/api/delete/&lt;id&gt;/&lt;deletion_password&gt;</span
+            >
         </div>
 
         <code class="response">
@@ -100,14 +94,11 @@
 &#125;
             </pre>
         </code>
-
     </section>
-
 </main>
 
 <style type="text/scss">
-
-    @import 'src/scss/variables';
+    @import "src/scss/variables";
 
     h1 {
         color: $accent;
@@ -119,7 +110,6 @@
     }
 
     section {
-
         color: #fff;
         font-size: 12pt;
         display: grid;
@@ -131,7 +121,6 @@
         }
 
         div.url {
-
             span.method {
                 background-color: $background2;
                 padding: 1px 2px;
@@ -144,26 +133,25 @@
             span.url {
                 font-family: monospace;
             }
-
         }
 
-        div.params, div.headers {
-
+        div.params,
+        div.headers {
             display: grid;
-            row-gap: .2em;
+            row-gap: 0.2em;
 
             &::before {
-                margin-bottom: .5em;
+                margin-bottom: 0.5em;
                 display: block;
-                content: 'Params:';
+                content: "Params:";
                 font-family: monospace;
             }
 
-            div.param, div.header {
-
+            div.param,
+            div.header {
                 span {
                     display: inline-block;
-                    margin-right: .5em;
+                    margin-right: 0.5em;
                 }
 
                 span.name {
@@ -180,13 +168,11 @@
                 }
 
                 // span.description {}
-
             }
-
         }
 
         div.headers::before {
-            content: 'Headers:';
+            content: "Headers:";
         }
 
         div.body {
@@ -194,13 +180,12 @@
         }
 
         code.response {
-
             font-family: monospace;
 
             &::before {
-                margin-bottom: .5em;
+                margin-bottom: 0.5em;
                 display: block;
-                content: 'Response:';
+                content: "Response:";
             }
 
             pre {
@@ -210,9 +195,6 @@
                 background-color: #fff;
                 color: $background;
             }
-
         }
-
     }
-
 </style>

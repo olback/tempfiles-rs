@@ -10,9 +10,10 @@ edition = "2021"
 rocket = { version = "0.6.0-dev", git = "https://github.com/olback/Rocket", branch = "sync-db-pools-tls", features = [ "json" ] }
 rocket_dyn_templates = { version = "0.1.0", git = "https://github.com/olback/Rocket", branch = "sync-db-pools-tls", features = [ "handlebars" ], default-features = false }
 rocket_sync_db_pools= { version = "0.1.0", git = "https://github.com/olback/Rocket", branch = "sync-db-pools-tls", features = [ "postgres_pool_tls" ] }
+native-tls ={ version = "0.2", features = [ "vendored" ] } # Specify feature vendored to use vendored OpenSSL
 rand = "0.8"
 serde = { version = "1", features = [ "derive" ] }
 serde_json = "1"
 bincode = "1.2"
-aead = "0.4"
-aes-gcm-siv = "0.10"
+aead = "0.5"
+aes-gcm-siv = "0.11"

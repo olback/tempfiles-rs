@@ -1,40 +1,37 @@
 <script>
-
     let id = "";
     let password = "";
 
     function download() {
-
         window.location = `${window.origin}/d/${id}/${password}`;
-
     }
-
 </script>
 
-<h1>Download</h1>
+<h1><i class="fas fa-file-download"></i>&nbsp;&nbsp;Download</h1>
 
 <div class="delete">
-
     <label for="id">ID</label>
-    <input bind:value={id} id="id" type="text">
+    <input bind:value={id} id="id" placeholder="File ID" type="text" />
 
     <label for="password">Password</label>
-    <input bind:value={password} id="password" type="text">
+    <input
+        bind:value={password}
+        id="password"
+        placeholder="File password"
+        type="text"
+    />
 
     <button on:click={download}>Download</button>
-
 </div>
 
 <style type="text/scss">
-
-    @import 'src/scss/variables';
+    @import "src/scss/variables";
 
     h1 {
         color: $accent;
     }
 
     div.delete {
-
         display: grid;
         grid-template-columns: auto auto;
         row-gap: 1em;
@@ -47,7 +44,6 @@
         }
 
         input {
-
             padding: 1em;
             background-color: #ddd;
             width: auto;
@@ -56,11 +52,9 @@
             color: $background;
             outline: none;
             font-size: 12pt;
-
         }
 
         button {
-
             width: 100%;
             background-color: $accent;
             color: $background;
@@ -72,6 +66,7 @@
             transition: background-color $transition_time_button ease-in-out;
             grid-column-start: 1;
             grid-column-end: 3;
+            font-weight: bold;
 
             &:hover:not(:disabled) {
                 background-color: $accent2;
@@ -81,7 +76,6 @@
                 background-color: $accent2;
                 cursor: initial;
             }
-
         }
 
         p.error {
@@ -90,7 +84,5 @@
             padding: 1em;
             color: $background;
         }
-
     }
-
 </style>

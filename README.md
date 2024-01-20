@@ -22,19 +22,12 @@ Inspired by [Carlgo11/TempFiles](https://github.com/carlgo11/TempFiles)
 ## Backend
 
 **Prerequisites**
-* [musl](https://musl.libc.org/)
 * [Rust](https://www.rust-lang.org/) (cargo, rustup)
 
 
-**Add support for musl targets:**
-```terminal
-rustup target add x86_64-unknown-linux-musl --toolchain=nightly
-rustup component add rust-std --target=x86_64-unknown-linux-musl
-```
-
 **Build:**
 ```terminal
-cargo build --target x86_64-unknown-linux-musl --release
+cargo build --target x86_64-unknown-linux-gnu --release
 ```
 
 ## Frontend
@@ -45,7 +38,7 @@ cargo build --target x86_64-unknown-linux-musl --release
 **Build:**
 ```terminal
 cd frontend
-npm i
+npm i --legacy-peer-deps
 npm run build
 ```
 

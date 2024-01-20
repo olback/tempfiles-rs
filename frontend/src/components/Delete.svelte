@@ -1,6 +1,5 @@
 <script>
-
-    import config from '../config.js';
+    import config from "../config.js";
 
     let id = "";
     let delete_password = "";
@@ -8,37 +7,44 @@
     let error = null;
 
     function doDelete() {
-
         const url = config.apiUrl.join(`delete/${id}/${delete_password}`);
 
         fetch(url.toString(), {
-            method: 'DELETE'
+            method: "DELETE",
         })
-        .then(res => {
-            if (res.status === 200) {
-                success = "File deleted";
-                id = "";
-                delete_password = "";
-            } else {
-                error = "File not found";
-            }
-        })
-        .catch(err => error = err);
-
+            .then((res) => {
+                if (res.status === 200) {
+                    success = "File deleted";
+                    id = "";
+                    delete_password = "";
+                } else {
+                    error = "File not found";
+                }
+            })
+            .catch((err) => (error = err));
     }
-
-
 </script>
 
-<h1>Delete</h1>
+<h1><i class="fas fa-eraser"></i>&nbsp;&nbsp;Delete</h1>
 
 <div class="delete">
-
     <label for="id">ID</label>
-    <input bind:value={id} id="id" name="id" type="text">
+    <input
+        bind:value={id}
+        id="id"
+        name="id"
+        placeholder="File ID"
+        type="text"
+    />
 
     <label for="delete_password">Deletion password</label>
-    <input bind:value={delete_password} id="delete_password" name="delete_password" type="text">
+    <input
+        bind:value={delete_password}
+        id="delete_password"
+        name="delete_password"
+        placeholder="File deletion password"
+        type="text"
+    />
 
     <button on:click={doDelete}>Delete</button>
 
@@ -49,19 +55,16 @@
     {#if error}
         <p class="error">Error: {error}</p>
     {/if}
-
 </div>
 
 <style type="text/scss">
-
-    @import 'src/scss/variables';
+    @import "src/scss/variables";
 
     h1 {
         color: $accent;
     }
 
     div.delete {
-
         display: grid;
         grid-template-columns: auto auto;
         row-gap: 1em;
@@ -74,7 +77,6 @@
         }
 
         input {
-
             padding: 1em;
             background-color: #ddd;
             width: auto;
@@ -83,11 +85,9 @@
             color: $background;
             outline: none;
             font-size: 12pt;
-
         }
 
         button {
-
             width: 100%;
             background-color: $accent;
             color: $background;
@@ -99,6 +99,7 @@
             transition: background-color $transition_time_button ease-in-out;
             grid-column-start: 1;
             grid-column-end: 3;
+            font-weight: bold;
 
             &:hover:not(:disabled) {
                 background-color: $accent2;
@@ -108,11 +109,9 @@
                 background-color: $accent2;
                 cursor: initial;
             }
-
         }
 
         p {
-
             text-align: center;
             padding: 1em;
             color: $background;
@@ -126,9 +125,6 @@
             &.error {
                 background-color: #f33;
             }
-
         }
-
     }
-
 </style>
