@@ -4,6 +4,7 @@ use {
 };
 
 mod catchers;
+mod cleanup;
 mod config;
 mod content;
 mod crypto;
@@ -46,6 +47,7 @@ async fn launch() -> _ {
                 catchers::server::service_unavailable
             ],
         )
+        .attach(cleanup::Cleanup::fairing())
         .attach(Template::fairing())
         .attach(db::TempfilesDatabaseConn::fairing())
         .attach(AdHoc::on_ignite("Tempfiles config", |rocket| async {

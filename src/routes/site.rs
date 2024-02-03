@@ -9,6 +9,7 @@ use {
 struct IndexContext<'c> {
     version: &'c str,
     max_file_size: usize,
+    keep_hours: u64,
     name: String,
     url: String,
 }
@@ -18,6 +19,7 @@ impl<'c> IndexContext<'c> {
         Self {
             version: include_str!("../../version.txt").trim(),
             max_file_size: tc.max_file_size / (1024 * 1024),
+            keep_hours: tc.keep_hours,
             name: tc.name.clone(),
             url: tc.base_url.clone(),
         }
@@ -29,7 +31,7 @@ pub fn index(tc: &State<TempfilesConfig>) -> Template {
     Template::render("index", IndexContext::new(tc))
 }
 
-#[get("/<tab>")]
+#[get("/<tab>", rank = 2)]
 pub fn index_tab(tab: &str, tc: &State<TempfilesConfig>) -> Option<Template> {
     match tab {
         "upload" => Some(Template::render("index", IndexContext::new(tc))),
