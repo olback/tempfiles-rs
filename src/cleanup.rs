@@ -1,5 +1,7 @@
 use crate::{config::TempfilesConfig, db::TempfilesDatabaseConn};
-use rocket::{async_trait, fairing, fairing::Kind as FairingKind, Build, Orbit, Rocket, State};
+use rocket::{
+    async_trait, fairing, fairing::Kind as FairingKind, http::Status, Build, Orbit, Rocket, State,
+};
 
 #[derive(Clone)]
 pub struct Cleanup;
@@ -49,7 +51,15 @@ impl fairing::Fairing for Cleanup {
                                     }
                                 }
                             } else {
-                                rocket::error!("Cleanup: error: {}", res.status());
+                                let status = res.status();
+                                match res.text().await {
+                                    Ok(text) => {
+                                        rocket::info!("Cleanup: error: {status}: {text}");
+                                    }
+                                    Err(e) => {
+                                        rocket::error!("Cleanup: error: {status}: {e}");
+                                    }
+                                }
                             }
                         }
                         Err(e) => {
@@ -63,9 +73,13 @@ impl fairing::Fairing for Cleanup {
 }
 
 #[rocket::get("/cleanup?<key>", rank = 1)]
-async fn endpoint(db: TempfilesDatabaseConn, config: &State<TempfilesConfig>, key: &str) -> String {
+async fn endpoint(
+    db: TempfilesDatabaseConn,
+    config: &State<TempfilesConfig>,
+    key: &str,
+) -> (Status, String) {
     if config.cleanup_key != key {
-        return "invalid key".into();
+        return (Status::Unauthorized, "invalid key".into());
     }
 
     let keep_hours = config.keep_hours as f64;
@@ -80,7 +94,10 @@ async fn endpoint(db: TempfilesDatabaseConn, config: &State<TempfilesConfig>, ke
         .await;
 
     match res {
-        Ok(n_rows) => format!("deleted {n_rows} files older than {keep_hours} hours"),
-        Err(e) => format!("error: {}", e),
+        Ok(n_rows) => (
+            Status::Ok,
+            format!("deleted {n_rows} files older than {keep_hours} hours"),
+        ),
+        Err(e) => (Status::InternalServerError, format!("error: {}", e)),
     }
 }
