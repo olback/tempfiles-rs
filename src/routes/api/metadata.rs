@@ -1,5 +1,6 @@
 use super::ApiError;
 use crate::{
+    config::TempfilesConfig,
     content::Content,
     crypto::Crypto,
     db::{schemas::TempfilesDatabase, TempfilesDatabaseConn},
@@ -7,7 +8,7 @@ use crate::{
     impl_responder,
     password::Password,
 };
-use rocket::get;
+use rocket::{get, State};
 use serde::Serialize;
 use serde_json;
 
@@ -25,25 +26,26 @@ impl_responder!(ApiMetadataResponse);
 pub async fn metadata(
     id: FileId,
     password: Password,
+    tc: &State<TempfilesConfig>,
     mut db: TempfilesDatabaseConn,
 ) -> Result<ApiMetadataResponse, ApiError> {
-    let row = TempfilesDatabase::get_by_id(&mut db, id.into()).await?;
+    match TempfilesDatabase::get_by_id(&mut db, id.into(), tc.keep_hours).await? {
+        Some(data) => {
+            let content_bytes =
+                &(match Crypto::decrypt(data.iv, password.as_array32(), &data.content) {
+                    Ok(v) => v,
+                    Err(_) => return Err(ApiError::not_found()),
+                });
 
-    if let Some(ref data) = row {
-        let content_bytes = &(match Crypto::decrypt(data.iv, password.as_array32(), &data.content) {
-            Ok(v) => v,
-            Err(_) => return Err(ApiError::not_found()),
-        });
+            let content = bincode::deserialize::<Content>(content_bytes)?;
 
-        let content = bincode::deserialize::<Content>(content_bytes)?;
-
-        return Ok(ApiMetadataResponse {
-            status: 200,
-            content_type: content.content_type,
-            content_length: content.data.len(),
-            filename: content.filename,
-        });
+            Ok(ApiMetadataResponse {
+                status: 200,
+                content_type: content.content_type,
+                content_length: content.data.len(),
+                filename: content.filename,
+            })
+        }
+        None => Err(ApiError::not_found()),
     }
-
-    Err(ApiError::not_found())
 }

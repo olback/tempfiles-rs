@@ -1,4 +1,7 @@
-use crate::{config::TempfilesConfig, db::TempfilesDatabaseConn};
+use crate::{
+    config::TempfilesConfig,
+    db::{schemas::TempfilesDatabase, TempfilesDatabaseConn},
+};
 use rocket::{
     async_trait, fairing, fairing::Kind as FairingKind, http::Status, Build, Orbit, Rocket, State,
 };
@@ -68,13 +71,15 @@ impl fairing::Fairing for Cleanup {
                     }
                 }
             });
+        } else {
+            rocket::warn!("Automatic cleanup disabled");
         }
     }
 }
 
 #[rocket::get("/cleanup?<key>", rank = 1)]
 async fn endpoint(
-    db: TempfilesDatabaseConn,
+    mut db: TempfilesDatabaseConn,
     config: &State<TempfilesConfig>,
     key: &str,
 ) -> (Status, String) {
@@ -82,21 +87,13 @@ async fn endpoint(
         return (Status::Unauthorized, "invalid key".into());
     }
 
-    let keep_hours = config.keep_hours as f64;
-
-    let res = db
-        .run(move |con| {
-            con.execute(
-                "delete from public.tempfiles WHERE timestamp < now() - (interval '1 hours' * $1)",
-                &[&keep_hours],
-            )
-        })
-        .await;
-
-    match res {
+    match TempfilesDatabase::cleanup(&mut db, config.keep_hours).await {
         Ok(n_rows) => (
             Status::Ok,
-            format!("deleted {n_rows} files older than {keep_hours} hours"),
+            format!(
+                "deleted {n_rows} files older than {} hours or with views >= max_views",
+                config.keep_hours
+            ),
         ),
         Err(e) => (Status::InternalServerError, format!("error: {}", e)),
     }

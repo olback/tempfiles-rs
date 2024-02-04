@@ -24,9 +24,7 @@ pub async fn delete(
 ) -> Result<ApiDeleteResponse, ApiError> {
     match TempfilesDatabase::delete(&mut db, id.into(), delete_password.into()).await? {
         0 => Err(ApiError::not_found()),
-
         1 => Ok(ApiDeleteResponse { status: 200 }),
-
         _ => unreachable!(),
     }
 }

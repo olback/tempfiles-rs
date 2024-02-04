@@ -10,8 +10,8 @@ use serde_json;
 #[derive(Serialize)]
 pub struct ApiStatsResponse {
     pub status: u16,
-    pub size: u32,
-    pub files: u32,
+    pub size: i64,
+    pub files: i64,
 }
 
 impl_responder!(ApiStatsResponse);
