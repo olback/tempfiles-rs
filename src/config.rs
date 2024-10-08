@@ -1,5 +1,6 @@
 pub struct TempfilesConfig {
     pub max_file_size: usize,
+    pub max_views: i32,
     pub base_url: String,
     pub name: String,
     pub keep_hours: u64,       // hours to keep files
@@ -13,6 +14,10 @@ impl TempfilesConfig {
             max_file_size: std::env::var("ROCKET_LIMITS_BYTES")
                 .unwrap()
                 .parse::<usize>()
+                .unwrap(),
+            max_views: std::env::var("TEMPFILES_MAX_VIEWS")
+                .unwrap()
+                .parse::<i32>()
                 .unwrap(),
             base_url: std::env::var("TEMPFILES_BASE_URL").unwrap(),
             name: std::env::var("TEMPFILES_NAME").unwrap(),

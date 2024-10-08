@@ -119,7 +119,7 @@
                 upload_success = null;
                 error = null;
                 filename = null;
-                maxViews = 26;
+                maxViews = 10;
             }}
         >
             Upload another
@@ -148,15 +148,14 @@
             <input
                 bind:value={maxViews}
                 on:input={(e) => {
-                    maxViewsLabel.innerHTML =
-                        e.target.value == 26 ? "Infinite" : e.target.value;
+                    maxViewsLabel.innerHTML = e.target.value;
                 }}
                 type="range"
                 min="1"
-                max="26"
+                max="10"
                 step="1"
             />
-            <span bind:this={maxViewsLabel}>Infinite</span>
+            <span bind:this={maxViewsLabel}>10</span>
         </div>
 
         <button on:click={uploadFile}>

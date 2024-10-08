@@ -28,7 +28,7 @@
             </div>
             <div class="param">
                 <span class="name">maxviews</span>
-                <span class="datatype">integer (optional)</span>
+                <span class="datatype">integer</span>
                 <span class="description"
                     >Maximum times a file can be viewed</span
                 >

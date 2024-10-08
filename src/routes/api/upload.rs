@@ -28,7 +28,7 @@ impl_responder!(ApiUploadResponse);
 #[post("/upload?<filename>&<maxviews>", data = "<data>")]
 pub async fn upload(
     filename: Option<&str>,
-    maxviews: Option<i32>,
+    maxviews: i32,
     content_type: Option<&ContentType>,
     data: Data<'_>,
     tc: &State<TempfilesConfig>,
@@ -51,8 +51,13 @@ pub async fn upload(
         return Err(ApiError::new("File may not be empty", 422));
     } else if size == tc.max_file_size as u64 {
         return Err(ApiError::new("File too large", 422));
-    } else if maxviews.is_some() && Some(1) > maxviews {
+    } else if maxviews < 1 {
         return Err(ApiError::new("Max views may not be below 1", 422));
+    } else if maxviews > tc.max_views {
+        return Err(ApiError::new(
+            "Max views may not be above the server limit",
+            422,
+        ));
     }
 
     let id = FileId::new(16);

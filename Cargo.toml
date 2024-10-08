@@ -1,6 +1,6 @@
 [package]
 name = "tempfiles-rs"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Edwin Svensson <tempfilesrs@olback.net>"]
 edition = "2021"
 

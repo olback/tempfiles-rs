@@ -57,7 +57,7 @@ impl TempfilesDatabase {
         id: String,
         iv: &[u8; 12],
         content: Vec<u8>,
-        max_views: Option<i32>,
+        max_views: i32,
         delete_password: String,
     ) -> Result<(), postgres::Error> {
         let iv_vec = iv.to_vec();
