@@ -28,7 +28,7 @@ impl_responder!(ApiUploadResponse);
 #[post("/upload?<filename>&<maxviews>", data = "<data>")]
 pub async fn upload(
     filename: Option<&str>,
-    maxviews: i32,
+    maxviews: Option<i32>,
     content_type: Option<&ContentType>,
     data: Data<'_>,
     tc: &State<TempfilesConfig>,
@@ -45,6 +45,8 @@ pub async fn upload(
         .stream_to(&mut content.data)
         .await?
         .written;
+
+    let maxviews = maxviews.unwrap_or(tc.max_views);
 
     // Check for invalid data
     if size == 0 {

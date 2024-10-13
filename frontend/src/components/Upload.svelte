@@ -4,7 +4,7 @@
 
     let label;
     let input;
-    let maxViews = 26;
+    let maxViews = 10;
     let maxViewsLabel;
     let error = null;
     let filename = null;
@@ -38,9 +38,7 @@
 
         let params = new ParamsBuilder();
         params.append("filename", filename);
-        if (maxViews < 26) {
-            params.append("maxviews", maxViews);
-        }
+        params.append("maxviews", maxViews);
 
         const url = config.apiUrl.join("upload");
         url.search = params.toString();
